@@ -52,8 +52,8 @@ set_pixel:
     add t1, a1, t1            # t3 = y + 8*xmod4
     addi t2, zero, 1
     sll t1, t2, t1
-    or, t1, LEDS(a0)
-    ldw, t1, LEDS(a0)
+    or t1, LEDS(a0)
+    ldw t1, LEDS(a0)
 
 ; END: set_pixel
 
