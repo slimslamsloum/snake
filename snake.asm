@@ -47,13 +47,13 @@ clear_leds:
 ; BEGIN: set_pixel
 set_pixel:
 
-    andi t1, a0, 3            # t1 = a0 mod 4
-    slli t1, t1, 3            # multiply t1 by 8  
-    add t1, a1, t1            # t3 = y + 8*xmod4
-    addi t2, zero, 1
-    sll t1, t2, t1
-    or t1, LEDS(a0)
-    ldw t1, LEDS(a0)
+    andi t0, a0, 3            # t0 = a0 mod 4
+    slli t0, t0, 3            # multiply t0 by 8  
+    add t0, a1, t0            # t0 = a1+t0
+    addi t1, zero, 1          # t1 = 1
+    sll t0, t1, t0            # shift t1 by t0
+    or t0, t0, LEDS(a0)       # bit number t0 is turned on in LEDS(a0)
+    ldw, t0, LEDS(a0)         # t0 (leds with bit number t0 turned) is loaded
 
 ; END: set_pixel
 
