@@ -37,11 +37,23 @@ main:
 ; BEGIN: clear_leds
 clear_leds:
 
+    stw zero, LEDS(zero)
+    stw zero, LEDS+4(zero)
+    stw zero, LEDS+8(zero)
+
 ; END: clear_leds
 
 
 ; BEGIN: set_pixel
 set_pixel:
+
+    andi t1, a0, 3            # t1 = a0 mod 4
+    slli t1, t1, 3            # multiply t1 by 8  
+    add t1, a1, t1            # t3 = y + 8*xmod4
+    addi t2, zero, 1
+    sll t1, t2, t1
+    or, t1, LEDS(a0)
+    ldw, t1, LEDS(a0)
 
 ; END: set_pixel
 
