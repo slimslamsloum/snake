@@ -52,12 +52,13 @@ set_pixel:
     add t0, a1, t0            # t0 = a1+t0
     addi t1, zero, 1          # t1 = 1
     sll t0, t1, t0            # shift t1 by t0
-<<<<<<< HEAD
-    or t0, t0, LEDS+a0       # bit number t0 is turned on in LEDS(a0)
-=======
-    or t0, t0, LEDS(a0)       # bit number t0 is turned on in LEDS(a0)
->>>>>>> d91f4bc0bcee3c2b035e3d8d98a048515d55a425
-    ldw t0, LEDS(a0)         # t0 (leds with bit number t0 turned) is loaded
+
+    srli t2, a0, 2            # a0 is divided by 4 (division entière)
+    slli t2, t2, 2            # t2 is multiplied by 4
+    addi t2, t2, LEDS 
+
+    or t0, t0, t2             # bit number t0 is turned on in LEDS(a0)
+    ldw t0, LEDS(a0)          # t0 (leds with bit number t0 turned) is loaded
 
 ; END: set_pixel
 
