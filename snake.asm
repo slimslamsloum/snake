@@ -58,7 +58,7 @@ set_pixel:
     addi t2, t2, LEDS 
 
     or t0, t0, t2             # bit number t0 is turned on in LEDS(a0)
-    ldw t0, LEDS(a0)          # t0 (leds with bit number t0 turned) is loaded
+    ldw LEDS+a0, 0(t0)          # t0 (leds with bit number t0 turned) is loaded
 
 ; END: set_pixel
 
