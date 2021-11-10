@@ -85,9 +85,9 @@ set_pixel:
     addi t2, t2, LEDS         # t2 has correct leds address
 
     
-    ldw t3, 0(t2)
-    or t3, t3, t0             # bit number t0 is turned on in LEDS(a0)
-    stw t3, 0(t2)             # t0 (leds with bit number t0 turned) is loaded
+    ldw t3, 0(t2)             # get the previous state of the leds
+    or t3, t3, t0             # combine with new turned on pixel 
+    stw t3, 0(t2)             # store new state of pixels in correct address
 
     ret
 
