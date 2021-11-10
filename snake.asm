@@ -66,6 +66,8 @@ clear_leds:
     stw zero, LEDS+4(zero)
     stw zero, LEDS+8(zero)
 
+    ret
+
 ; END: clear_leds
 
 
@@ -80,10 +82,14 @@ set_pixel:
 
     srli t2, a0, 2            # a0 is divided by 4 (division entière)
     slli t2, t2, 2            # t2 is multiplied by 4
-    addi t2, t2, LEDS 
+    addi t2, t2, LEDS         # t2 has correct leds address
 
-    or t0, t0, t2             # bit number t0 is turned on in LEDS(a0)
-    ldw t2, 0(t0)        # t0 (leds with bit number t0 turned) is loaded
+    
+    ldw t3, 0(t2)
+    or t3, t3, t0             # bit number t0 is turned on in LEDS(a0)
+    stw t3, 0(t2)             # t0 (leds with bit number t0 turned) is loaded
+
+    ret
 
 ; END: set_pixel
 
