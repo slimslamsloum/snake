@@ -191,8 +191,46 @@ draw_array:
 ; BEGIN: move_snake
 move_snake:
 
-ldw t0, 0(CP_HEAD_X)
-ldw t1, GSA(t0)
+ldw t0, 0(CP_HEAD_X) ; load head_x coordinate
+slli t0, t0, 3 ; multiply head_x by 8
+ldw t1, 0(CP_HEAD_Y) ; load head_y coordinate
+add t0, t0, t1 ; add head_y and 8*head_x
+slli t0, t0, 2 ; multiply result by 2 
+ldw t1, GSA(t0) ; load word at address GSA + t0
+
+
+addi t2, zero, 1 ; t1 represents 1
+
+addi t0, zero, 0 ; t0 is 0
+beq t1, t0, none ; none case
+addi t0, t0, 1 ; t0 is 1
+beq t1, t0, move_left ; left case
+addi t0, t0, 1 ; t0 is 2
+beq t1, t0, move_up ; up case
+addi t0, t0, 1 ; t0 is 3
+beq t1, t0, move_right ; right case
+addi t0, t0, 1 ; t0 is 4
+beq t1, t0, move_down ; down case
+
+
+none:
+    beq a1, t2, food ; branch to food is a1 is on 
+    
+
+move_left: 
+    beq a1, t2, food ; branch to food is a1 is on 
+
+move_up: 
+    beq a1, t2, food ; branch to food is a1 is on 
+
+move_right: 
+    beq a1, t2, food ; branch to food is a1 is on 
+
+move_down: 
+    beq a1, t2, food ; branch to food is a1 is on 
+
+
+
 
 ; END: move_snake
 
