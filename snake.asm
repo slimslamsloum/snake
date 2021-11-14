@@ -191,6 +191,9 @@ draw_array:
 ; BEGIN: move_snake
 move_snake:
 
+ldw t0, 0(CP_HEAD_X)
+ldw t1, GSA(t0)
+
 ; END: move_snake
 
 
