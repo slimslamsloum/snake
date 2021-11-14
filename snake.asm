@@ -200,6 +200,7 @@ ldw t1, GSA(t0) ; load word at address GSA + t0
 
 
 addi t2, zero, 1 ; t1 represents 1
+beq a1, t2, food ; branch to food is a1 is on 
 
 addi t0, zero, 0 ; t0 is 0
 beq t1, t0, none ; none case
@@ -212,22 +213,22 @@ beq t1, t0, move_right ; right case
 addi t0, t0, 1 ; t0 is 4
 beq t1, t0, move_down ; down case
 
+food:
+
 
 none:
-    beq a1, t2, food ; branch to food is a1 is on 
     
 
 move_left: 
-    beq a1, t2, food ; branch to food is a1 is on 
+    
 
 move_up: 
-    beq a1, t2, food ; branch to food is a1 is on 
-
+    
 move_right: 
-    beq a1, t2, food ; branch to food is a1 is on 
+    
 
 move_down: 
-    beq a1, t2, food ; branch to food is a1 is on 
+   
 
 
 
