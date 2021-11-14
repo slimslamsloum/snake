@@ -140,7 +140,7 @@ slli t4, HEAD_X, 3 ; multiply head_x with 8
 add t3, HEAD_Y, t4 ; add head_y with (head_x + 8)
 slli t3, t3, 4 ; multiply by 4 to get the good word in gsa
 addi t2, zero, 2 ; init a register at 2
-lstw t2, GSA(t3); change gsa
+stw t2, GSA(t3); change gsa
 addi v0, zero, 2 ; init v0 to the good direction's value
 stw  zero, BUTTONS+4(zero) ; put edge button to zero again 
 
