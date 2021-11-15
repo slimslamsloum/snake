@@ -114,11 +114,9 @@ beq t1, t2, right ; for right case
 sra t1, t1, 1 ; shift again 
 beq t1, t2, checkpoint ; for checkpoint case 
 
-; handle right case
+; handle none case
 none: 
-
 stw BUTTONS+4, zero ; put buttons at zero
-
 ret
 
 ; handle the left case 
@@ -128,6 +126,9 @@ slli t4, HEAD_X, 3  ; multiply head_x with 8
 add t3, HEAD_Y, t4 ; add head_y with (head_x * 8)
 slli t3, t3, 2 ; multiply by 4 to get the good word in gsa
 addi t2, zero, 1 ; init a register at 1
+addi t5, zero, 4 ; init a register at 4 (right direction)
+ldw t4, GSA(t3); load the current value that is in the gsa
+beq t4, t5, none ; if it indicate an opposite direction ignore the action
 stw t2, GSA(t3) ; change the value of the head direction in the gsa
 addi v0, zero, 1 ; init v0 to the good direction's value 
 stw  zero, BUTTONS+4(zero) ; put edge button to zero again 
@@ -140,6 +141,9 @@ slli t4, HEAD_X, 3 ; multiply head_x with 8
 add t3, HEAD_Y, t4 ; add head_y with (head_x + 8)
 slli t3, t3, 4 ; multiply by 4 to get the good word in gsa
 addi t2, zero, 2 ; init a register at 2
+addi t5, zero, 3 ; init a register at 3 (down direction)
+ldw t4, GSA(t3); load the current value that is in the gsa
+beq t4, t5, none ; if it indicate an opposite direction ignore the action
 stw t2, GSA(t3); change gsa
 addi v0, zero, 2 ; init v0 to the good direction's value
 stw  zero, BUTTONS+4(zero) ; put edge button to zero again 
@@ -152,6 +156,9 @@ slli t4, HEAD_X, 8  ; multiply head_x with 8
 add t3, HEAD_Y, t4 ; add head_y with (head_x + 8)
 slli t3, t3, 4 ; multiply by 4 to get the good word in gsa
 addi t2, zero, 3 ; init a register at 3
+addi t5, zero, 2 ; init a register at 2 (up direction)
+ldw t4, GSA(t3); load the current value that is in the gsa
+beq t4, t5, none ; if it indicate an opposite direction ignore the action
 stw t2, GSA(t3); change gsa
 addi v0, zero, 3 ; init v0 to the good direction's value
 stw  zero, BUTTONS+4(zero) ; put edge button to zero again 
@@ -163,6 +170,9 @@ slli t4, HEAD_X, 8  ; multiply head_x with 8
 add t3, HEAD_Y, t4 ; add head_y with (head_x + 8)
 slli t3, t3, 4 ; multiply by 4 to get the good word in gsa
 addi t2, zero, 4 ; init a register at 4
+addi t5, zero, 1 ; init a register at 1 (left direction)
+ldw t4, GSA(t3); load the current value that is in the gsa
+beq t4, t5, none ; if it indicate an opposite direction ignore the action
 stw t2, GSA(t3); change gsa
 addi v0, zero, 4 ; init v0 to the good direction's value
 stw  zero, BUTTONS+4(zero) ; put edge button to zero again 
