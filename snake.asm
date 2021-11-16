@@ -98,109 +98,128 @@ hit_test:
 ;BEGIN: get_input
 get_input:
 
-add v0, zero,zero ;init vo to zero 
-andi t0, BUTTONS+4, 31 ; mask the buttons to get the fourth firts bits
-sra t1, t0, 1 ; shift one to get the first bit
-addi t2, zero, 1; init a bit 
-beq t1, t2, none; test for none case 
-sra t1, t1, 1 ; shift again
-beq t1, t2, left ; for left case 
-sra t1, t1, 1 ; shift again 
-beq t1, t2, up ; for up case 
-sra t1, t1, 1 ; shift again 
-beq t1, t2, down ; for down case 
-sra t1, t1, 1 ; shift again 
-beq t1, t2, right ; for right case 
-sra t1, t1, 1 ; shift again 
-beq t1, t2, checkpoint ; for checkpoint case 
+    add v0, zero,zero ;init vo to zero 
+    andi t0, BUTTONS+4, 31 ; mask the buttons to get the fourth firts bits
+    sra t1, t0, 1 ; shift one to get the first bit
+    addi t2, zero, 1; init a bit 
+    beq t1, t2, none; test for none case 
+    sra t1, t1, 1 ; shift again
+    beq t1, t2, left ; for left case 
+    sra t1, t1, 1 ; shift again 
+    beq t1, t2, up ; for up case 
+    sra t1, t1, 1 ; shift again 
+    beq t1, t2, down ; for down case 
+    sra t1, t1, 1 ; shift again 
+    beq t1, t2, right ; for right case 
+    sra t1, t1, 1 ; shift again 
+    beq t1, t2, checkpoint ; for checkpoint case 
 
-; handle none case
-none: 
-stw BUTTONS+4, zero ; put buttons at zero
-ret
+    ; handle none case
+    none: 
+        stw BUTTONS+4, zero ; put buttons at zero
+        ret
 
-; handle the left case 
-left: 
+    ; handle the left case 
+    left: 
 
-slli t4, HEAD_X, 3  ; multiply head_x with 8
-add t3, HEAD_Y, t4 ; add head_y with (head_x * 8)
-slli t3, t3, 2 ; multiply by 4 to get the good word in gsa
-addi t2, zero, 1 ; init a register at 1
-addi t5, zero, 4 ; init a register at 4 (right direction)
-ldw t4, GSA(t3); load the current value that is in the gsa
-beq t4, t5, none ; if it indicate an opposite direction ignore the action
-stw t2, GSA(t3) ; change the value of the head direction in the gsa
-addi v0, zero, 1 ; init v0 to the good direction's value 
-stw  zero, BUTTONS+4(zero) ; put edge button to zero again 
+        slli t4, HEAD_X, 3  ; multiply head_x with 8
+        add t3, HEAD_Y, t4 ; add head_y with (head_x * 8)
+        slli t3, t3, 2 ; multiply by 4 to get the good word in gsa
+        addi t2, zero, DIR_LEFT ; init a register at 1
+        addi t5, zero, DIR_RIGHT ; init a register at 4 (right direction)
+        ldw t4, GSA(t3); load the current value that is in the gsa
+        beq t4, t5, none ; if it indicate an opposite direction ignore the action
+        stw t2, GSA(t3) ; change the value of the head direction in the gsa
+        addi v0, zero, DIR_LEFT ; init v0 to the good direction's value 
+        stw  zero, BUTTONS+4(zero) ; put edge button to zero again 
 
-ret
-; handle the up case 
-up:
+        ret
+    ; handle the up case 
+    up:
 
-slli t4, HEAD_X, 3 ; multiply head_x with 8
-add t3, HEAD_Y, t4 ; add head_y with (head_x + 8)
-slli t3, t3, 4 ; multiply by 4 to get the good word in gsa
-addi t2, zero, 2 ; init a register at 2
-addi t5, zero, 3 ; init a register at 3 (down direction)
-ldw t4, GSA(t3); load the current value that is in the gsa
-beq t4, t5, none ; if it indicate an opposite direction ignore the action
-stw t2, GSA(t3); change gsa
-addi v0, zero, 2 ; init v0 to the good direction's value
-stw  zero, BUTTONS+4(zero) ; put edge button to zero again 
+        slli t4, HEAD_X, 3 ; multiply head_x with 8
+        add t3, HEAD_Y, t4 ; add head_y with (head_x + 8)
+        slli t3, t3, 2 ; multiply by 4 to get the good word in gsa
+        addi t2, zero, DIR_UP ; init a register at 2
+        addi t5, zero, DIR_DOWN ; init a register at 3 (down direction)
+        ldw t4, GSA(t3); load the current value that is in the gsa
+        beq t4, t5, none ; if it indicate an opposite direction ignore the action
+        stw t2, GSA(t3); change gsa
+        addi v0, zero, 2 ; init v0 to the good direction's value
+        stw  zero, BUTTONS+4(zero) ; put edge button to zero again 
 
-ret
-;handle the down case 
-down:
+        ret
+    ;handle the down case 
+    down:
 
-slli t4, HEAD_X, 8  ; multiply head_x with 8
-add t3, HEAD_Y, t4 ; add head_y with (head_x + 8)
-slli t3, t3, 4 ; multiply by 4 to get the good word in gsa
-addi t2, zero, 3 ; init a register at 3
-addi t5, zero, 2 ; init a register at 2 (up direction)
-ldw t4, GSA(t3); load the current value that is in the gsa
-beq t4, t5, none ; if it indicate an opposite direction ignore the action
-stw t2, GSA(t3); change gsa
-addi v0, zero, 3 ; init v0 to the good direction's value
-stw  zero, BUTTONS+4(zero) ; put edge button to zero again 
-ret
-;handle the right case 
-right:
+        slli t4, HEAD_X, 3  ; multiply head_x with 8
+        add t3, HEAD_Y, t4 ; add head_y with (head_x + 8)
+        slli t3, t3, 2 ; multiply by 4 to get the good word in gsa
+        addi t2, zero, DIR_DOWN ; init a register at 3
+        addi t5, zero, DIR_UP ; init a register at 2 (up direction)
+        ldw t4, GSA(t3); load the current value that is in the gsa
+        beq t4, t5, none ; if it indicate an opposite direction ignore the action
+        stw t2, GSA(t3); change gsa
+        addi v0, zero, DIR_DOWN ; init v0 to the good direction's value
+        stw  zero, BUTTONS+4(zero) ; put edge button to zero again 
 
-slli t4, HEAD_X, 8  ; multiply head_x with 8
-add t3, HEAD_Y, t4 ; add head_y with (head_x + 8)
-slli t3, t3, 4 ; multiply by 4 to get the good word in gsa
-addi t2, zero, 4 ; init a register at 4
-addi t5, zero, 1 ; init a register at 1 (left direction)
-ldw t4, GSA(t3); load the current value that is in the gsa
-beq t4, t5, none ; if it indicate an opposite direction ignore the action
-stw t2, GSA(t3); change gsa
-addi v0, zero, 4 ; init v0 to the good direction's value
-stw  zero, BUTTONS+4(zero) ; put edge button to zero again 
+        ret
+    ;handle the right case 
+    right:
 
-ret
-;handle the checkpoiny case 
-checkpoint:
+        slli t4, HEAD_X, 3  ; multiply head_x with 8
+        add t3, HEAD_Y, t4 ; add head_y with (head_x + 8)
+        slli t3, t3, DIR_LEFT ; multiply by 4 to get the good word in gsa
+        addi t2, zero, DIR_RIGHT ; init a register at 4
+        addi t5, zero, 1 ; init a register at 1 (left direction)
+        ldw t4, GSA(t3); load the current value that is in the gsa
+        beq t4, t5, none ; if it indicate an opposite direction ignore the action
+        stw t2, GSA(t3); change gsa
+        addi v0, zero, DIR_RIGHT ; init v0 to the good direction's value
+        stw  zero, BUTTONS+4(zero) ; put edge button to zero again 
 
-slli t4, HEAD_X, 8 ; multiply head_x with 8 
-add t3, HEAD_Y, t4 ; add head_y with (head_x + 8)
-slli t3, t3, 4 ; multiply by 4 to get the good word in gsa
-addi t2, zero, 5 ; init a register at 5
-stw t2, GSA(t3); change gsa
-addi v0, zero, 5 ; init v0 to the good direction's value
-stw  zero, BUTTONS+4(zero) ; put edge button to zero again 
+        ret
+    ;handle the checkpoiny case 
+    checkpoint:
 
-ret
+        slli t4, HEAD_X, 3 ; multiply head_x with 8 
+        add t3, HEAD_Y, t4 ; add head_y with (head_x + 8)
+        slli t3, t3, 2 ; multiply by 4 to get the good word in gsa
+        addi t2, zero, BUTTON_CHECKPOINT ; init a register at 5
+        stw t2, GSA(t3); change gsa
+        addi v0, zero, BUTTON_CHECKPOINT ; init v0 to the good direction's value
+        stw  zero, BUTTONS+4(zero) ; put edge button to zero again 
+
+        ret
 ; END: get_input
 
 
 ; BEGIN: draw_array
 draw_array:
+        addi t0, zero, 0
+        addi s1, zero, 0
+    ; BEGIN: search_loop
+    search_loop:
+        bne s1, NB_CELLS, search_loop ; test if we are at the end of the GSA
+        slli t3, s1, 2 ; multiply by 4 to get the good word 
+        ldw t3 , GSA(t3) ; load the word 
+        bne t0, t3, switch_on_led ; check if the leds => LOOK TO THE GOOD CALL TO DO 
+        addi s1, s1, 1; if not go to the next word 
+    ; End: search_loop
 
-
+    ; BEGIN: switch_on_led 
+    switch_on_led:
+        andi a1, s1, 7 ; get a1->y 
+        sub  t4, s1, a1 ; substract y to the value 
+        srli a0, t4, 3 ; get a0 -> x
+    
+        call set_pixel ; call set pixel => LOOK TO THE GOOD CALL 
+    ; END: switch_on_led
+    ret
 ; END: draw_array
-
-
+    
 ; BEGIN: move_snake
+
 move_snake:
 
  ldw t0, 0(CP_HEAD_X) ; load head_x coordinate
