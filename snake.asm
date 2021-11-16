@@ -93,7 +93,7 @@ hit_test:
 
 ; END: hit_test
 
-;TODO add the fact that he can't go in the opposite direction 
+
 ;TODO revoir le shift
 ;BEGIN: get_input
 get_input:
@@ -195,6 +195,7 @@ ret
 
 ; BEGIN: draw_array
 draw_array:
+
 
 ; END: draw_array
 
