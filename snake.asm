@@ -205,6 +205,7 @@ draw_array:
         ldw t3 , GSA(t3) ; load the word 
         bne t0, t3, switch_on_led ; check if the leds => LOOK TO THE GOOD CALL TO DO 
         addi s1, s1, 1; if not go to the next word 
+        j search_loop
     ; End: search_loop
 
     ; BEGIN: switch_on_led 
@@ -214,6 +215,8 @@ draw_array:
         srli a0, t4, 3 ; get a0 -> x
     
         call set_pixel ; call set pixel => LOOK TO THE GOOD CALL 
+        addi s1, s1, 1; if not go to the next word 
+        j search_loop
     ; END: switch_on_led
     ret
 ; END: draw_array
