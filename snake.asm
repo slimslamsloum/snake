@@ -200,7 +200,7 @@ draw_array:
         addi s1, zero, 0
     ; BEGIN: search_loop
     search_loop:
-        bne s1, NB_CELLS, search_loop ; test if we are at the end of the GSA
+        beq s1, NB_CELLS, draw_end ; test if we are at the end of the GSA
         slli t3, s1, 2 ; multiply by 4 to get the good word 
         ldw t3 , GSA(t3) ; load the word 
         bne t0, t3, switch_on_led ; check if the leds => LOOK TO THE GOOD CALL TO DO 
@@ -218,7 +218,12 @@ draw_array:
         addi s1, s1, 1; if not go to the next word 
         j search_loop
     ; END: switch_on_led
+
+    ; BEGIN: draw_end
+    draw_end:
     ret
+    ; END: draw_end 
+
 ; END: draw_array
     
 ; BEGIN: move_snake
