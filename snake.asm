@@ -63,7 +63,7 @@ main:
 
     loop:
 
-        clear_leds
+        call clear_leds
         call get_input
         addi a0, zero, 0
         call move_snake
