@@ -58,7 +58,6 @@ main:
 
     ret
 
-
 ; BEGIN: clear_leds
 clear_leds:
 
@@ -73,7 +72,8 @@ set_pixel:
 
 ; BEGIN: display_score
 display_score:
-
+    
+    ret 
 ; END: display_score
 
 
@@ -129,3 +129,15 @@ restore_checkpoint:
 blink_score:
 
 ; END: blink_score
+; BEGIN: digit_map
+digit_map:
+    .word 0xFC ; 0
+    .word 0x60 ; 1
+    .word 0xDA ; 2
+    .word 0xF2 ; 3
+    .word 0x66 ; 4
+    .word 0xB6 ; 5
+    .word 0xBE ; 6
+    .word 0xE0 ; 7
+    .word 0xFE ; 8
+    .word 0xF6 ; 9
