@@ -290,9 +290,6 @@ move_snake:
  beq t3, BUTTON_RIGHT, head_right ; head right case
  beq t3, BUTTON_DOWN, head_down ; head down case
 
- addi t5, zero, 1
- bne a1, t5, no_food ; branch to no_food if a1 is not 1
-
 
 ; BEGIN: head_left
 
@@ -302,6 +299,9 @@ move_snake:
  stw t0, HEAD_X(zero)
  addi t4, t4, -32
  stw t3, GSA(t4)
+
+ addi t5, zero, 1
+ bne a1, t5, no_food ; branch to no_food if a1 is not 1
 
  ret
 
@@ -316,6 +316,9 @@ move_snake:
  stw t1, HEAD_Y(zero)
  addi t4, t4, -4
  stw t3, GSA(t4)
+
+ addi t5, zero, 1
+ bne a1, t5, no_food ; branch to no_food if a1 is not 1
  
  ret
 
@@ -331,6 +334,9 @@ move_snake:
  addi t4, t4, 32
  stw t3, GSA(t4)
 
+ addi t5, zero, 1
+ bne a1, t5, no_food ; branch to no_food if a1 is not 1
+
  ret
 
  ; END: head_right
@@ -343,6 +349,9 @@ move_snake:
  stw t1, HEAD_Y(zero)
  addi t4, t4, 4
  stw t3, GSA(t4)
+
+ addi t5, zero, 1
+ bne a1, t5, no_food ; branch to no_food if a1 is not 1
 
  ret
 
