@@ -226,47 +226,157 @@ draw_array:
 
 ; END: draw_array
     
+
 ; BEGIN: move_snake
 
 move_snake:
 
- ldw t0, 0(CP_HEAD_X) ; load head_x coordinate
- slli t0, t0, 3 ; multiply head_x by 8
- ldw t1, 0(CP_HEAD_Y) ; load head_y coordinate
- add t0, t0, t1 ; add head_y and 8*head_x
- slli t0, t0, 2 ; multiply result by 2 
- ldw t1, GSA(t0) ; load word at address GSA + t0
+; t0 is head_x or tail_x
+; t1 is head_y or tail_y
+; t3 is direction
+; t4 is head/tail gsa
 
 
- addi t2, zero, 1 ; t1 represents 1
- beq a1, t2, food ; branch to food is a1 is on 
+ ldw t0, 0(HEAD_X) ; load head_x coordinate
+ slli t4, t0, 3 ; multiply head_x by 8
+ ldw t1, 0(HEAD_Y) ; load head_y coordinate
+ add t4, t4, t1 ; add head_y and 8*head_x
+ slli t4, t4, 2 ; multiply result by 4 
+ ldw t3, GSA(t4) ; load word at address GSA + t0
 
- addi t0, zero, 0 ; t0 is 0
- beq t1, t0, none ; none case
- addi t0, t0, 1 ; t0 is 1
- beq t1, t0, move_left ; left case
- addi t0, t0, 1 ; t0 is 2
- beq t1, t0, move_up ; up case
- addi t0, t0, 1 ; t0 is 3
- beq t1, t0, move_right ; right case
- addi t0, t0, 1 ; t0 is 4
- beq t1, t0, move_down ; down case
+ addi t2, zero, 1 ; t0 is 1
+ beq t3, t2, head_left ; head left case
+ addi t2, t2, 1 ; t0 is 2
+ beq t3, t2, head_up ; head up case
+ addi t2, t2, 1 ; t0 is 3
+ beq t3, t2, head_right ; head right case
+ addi t2, t2, 1 ; t0 is 4
+ beq t3, t2, head_down ; head down case
 
- food:
+ addi t5, zero, 1
+ bne a1, t5, no_food ; branch to no_food if a1 is not 1
 
 
- none:
+; BEGIN: head_left
+
+ head_left: 
+
+ addi t0, t0, -1
+ stw t0, zero(HEAD_X)
+ addi t4, t4, -32
+ stw t3, GSA(t4)
+
+ ; END: head_left
+
+
+; BEGIN: head_up
+
+ head_up: 
+
+ addi t1, t1, -1
+ stw t0, zero(HEAD_Y)
+ addi t4, t4, -4
+ stw t3, GSA(t4)
+
+ ; END: head_up
+ 
+
+; BEGIN: head_right
+
+ head_right:   
+
+ addi t0, t0, 1
+ stw t0, zero(HEAD_X)
+ addi t4, t4, 32
+ stw t3, GSA(t4)
+
+ ; END: head_right
+
+; BEGIN: head_down
+
+ head_down: 
+
+ addi t1, t1, 1
+ stw t0, zero(HEAD_Y)
+ addi t4, t4, 4
+ stw t3, GSA(t4)
+
+ ; END: head_down
+
+
+; BEGIN: no_food
+
+ no_food:
+
+ ldw t0, 0(TAIL_X) ; load tail_x coordinate
+ slli t4, t0, 3 ; multiply tail_x by 8
+ ldw t1, 0(TAIL_Y) ; load tail_y coordinate
+ add t4, t4, t1 ; add tail_y and 8*tail_x
+ slli t4, t4, 2 ; multiply result by 4 
+
+ addi t2, zero, 1 ; t0 is 1
+ beq t3, t2, tail_left ; tail left case
+ addi t2, t2, 1 ; t0 is 2
+ beq t3, t2, tail_up ; tail up case
+ addi t2, t2, 1 ; t0 is 3
+ beq t3, t2, tail_right ; tail right case
+ addi t2, t2, 1 ; t0 is 4
+ beq t3, t2, tail_down ; tail down case
+
+ ; END: no_food
+
+
+; BEGIN: tail_left
+
+ tail_left: 
+
+ stw zero, GSA(t4)
+ addi t0, t0, -1
+ stw t0, zero(TAIL_X)
+ addi t4, t4, -32
+ stw t3, GSA(t4)
+
+ ; END: tail_left
+
+
+; BEGIN: tail_up
+
+ tail_up: 
+
+ stw zero, GSA(t4)
+ addi t1, t1, -1
+ stw t0, zero(TAIL_Y)
+ addi t4, t4, -4
+ stw t3, GSA(t4)
+
+ ; END: tail_up
+ 
      
+; BEGIN: tail_right
 
- move_left: 
-     
+ tail_right:   
 
- move_up: 
-     
- move_right: 
-     
+ stw zero, GSA(t4)
+ addi t0, t0, 1
+ stw t0, zero(TAIL_X)
+ addi t4, t4, 32
+ stw t3, GSA(t4)
 
- move_down: 
+ ; END: tail_right
+
+
+; BEGIN: tail_down
+
+ tail_down: 
+
+ stw zero, GSA(t4)
+ addi t1, t1, 1
+ stw t0, zero(TAIL_Y)
+ addi t4, t4, 4
+ stw t3, GSA(t4)
+
+; END: tail_down
+
 
 ; END: move_snake
 
