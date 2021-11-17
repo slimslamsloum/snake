@@ -284,11 +284,14 @@ move_snake:
  slli t4, t4, 2 ; multiply result by 4 
  ldw t3, GSA(t4) ; load word at address GSA + t0
 
-
- beq t3, BUTTON_LEFT, head_left ; head left case
- beq t3, BUTTON_UP, head_up ; head up case
- beq t3, BUTTON_RIGHT, head_right ; head right case
- beq t3, BUTTON_DOWN, head_down ; head down case
+ ldw t2, BUTTON_LEFT(zero)
+ beq t3, t2, head_left ; head left case
+ ldw t2, BUTTON_UP(zero)
+ beq t3, t2, head_up ; head up case
+ ldw t2, BUTTON_RIGHT(zero)
+ beq t3, t2, head_right ; head right case
+ ldw t2, BUTTON_DOWN(zero)
+ beq t3, t2, head_down ; head down case
 
 
 ; BEGIN: head_left
@@ -368,10 +371,14 @@ move_snake:
  add t4, t4, t1 ; add tail_y and 8*tail_x
  slli t4, t4, 2 ; multiply result by 4 
 
- beq t3, BUTTON_LEFT, tail_left ; tail left case
- beq t3, BUTTON_UP, tail_up ; tail up case
- beq t3, BUTTON_RIGHT, tail_right ; tail right case
- beq t3, BUTTON_DOWN, tail_down ; tail down case
+ ldw t2, BUTTON_LEFT(zero)
+ beq t3, t2, tail_left ; tail left case
+ ldw t2, BUTTON_UP(zero)
+ beq t3, t2, tail_up ; tail up case
+ ldw t2, BUTTON_RIGHT(zero)
+ beq t3, t2, tail_right ; tail right case
+ ldw t2, BUTTON_DOWN(zero)
+ beq t3, t2, tail_down ; tail down case
 
  ret
 
