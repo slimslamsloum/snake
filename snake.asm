@@ -244,7 +244,11 @@ draw_array:
         andi a1, s1, 7 ; get a1->y 
         sub  t4, s1, a1 ; substract y to the value 
         srli a0, t4, 3 ; get a0 -> x
-    
+
+        ; handle the stack pointer 
+        addi sp, sp, -4 
+        stw ra, 0(sp)
+
         call set_pixel ; call set pixel => LOOK TO THE GOOD CALL 
         addi s1, s1, 1; if not go to the next word 
         br search_loop
