@@ -54,10 +54,7 @@ addi    sp, zero, LEDS
 ;     This procedure should never return.
 main:
     ; TODO: Finish this procedure.
-
     ret
-
-
 ; BEGIN: clear_leds
 clear_leds:
 
@@ -94,36 +91,56 @@ hit_test:
 ; END: hit_test
 
 
-;TODO revoir le shift
+
 ;BEGIN: get_input
 get_input:
 
     add v0, zero,zero ;init vo to zero 
-    andi t0, BUTTONS+4, 31 ; mask the buttons to get the fourth firts bits
-    sra t1, t0, 1 ; shift one to get the first bit
-    addi t2, zero, 1; init a bit 
-    beq t1, t2, none; test for none case 
-    sra t1, t1, 1 ; shift again
-    beq t1, t2, left ; for left case 
-    sra t1, t1, 1 ; shift again 
-    beq t1, t2, up ; for up case 
-    sra t1, t1, 1 ; shift again 
-    beq t1, t2, down ; for down case 
-    sra t1, t1, 1 ; shift again 
+    ldw t0, BUTTONS+4(zero) ; load edge capture button
+
+    ;none case
+    andi t0, t0, 31 ; mask the buttons to get the fourth firts bits
+    addi t2, zero, 1; init a bit
+    addi t1, zero, 16; init a mask
+    and t1, t0, t1 ; mask it
+    beq t1, t2, none; test for checkpoint case 
+
+    ;right case
+    srai t1, t1, 1 ; shift again
+    and t1, t0, t1 ; mask it
     beq t1, t2, right ; for right case 
-    sra t1, t1, 1 ; shift again 
-    beq t1, t2, checkpoint ; for checkpoint case 
+
+    ;down case
+    srai t1, t1, 1 ; shift again 
+    and t1, t0, t1 ; mask it
+    beq t1, t2, down ; for down case 
+
+    ;up case
+    srai t1, t1, 1 ; shift again
+    and t1, t0, t1 ; mask it 
+    beq t1, t2, up ; for up case 
+    
+    ;left case
+    srai t1, t1, 1 ; shift again 
+    and t1, t0, t1 ; mask it
+    beq t1, t2, left ; for left case 
+
+    ;none case 
+    srai t1, t1, 1 ; shift again 
+    and t1, t0, t1 ; mask it
+    beq t1, t2, none ; for none case 
 
     ; handle none case
     none: 
-        stw BUTTONS+4, zero ; put buttons at zero
+        stw zero, BUTTONS+4(zero); put buttons at zero
         ret
-
     ; handle the left case 
     left: 
+        ldw t0, HEAD_X(zero) ; load head x position
+        ldw t1, HEAD_Y(zero) ; load head y position 
 
-        slli t4, HEAD_X, 3  ; multiply head_x with 8
-        add t3, HEAD_Y, t4 ; add head_y with (head_x * 8)
+        slli t4, t0, 3  ; multiply head_x with 8
+        add t3, t1, t4 ; add head_y with (head_x * 8)
         slli t3, t3, 2 ; multiply by 4 to get the good word in gsa
         addi t2, zero, DIR_LEFT ; init a register at 1
         addi t5, zero, DIR_RIGHT ; init a register at 4 (right direction)
@@ -136,9 +153,11 @@ get_input:
         ret
     ; handle the up case 
     up:
+        ldw t0, HEAD_X(zero) ; load head x position
+        ldw t1, HEAD_Y(zero) ; load head y position 
 
-        slli t4, HEAD_X, 3 ; multiply head_x with 8
-        add t3, HEAD_Y, t4 ; add head_y with (head_x + 8)
+        slli t4, t0, 3  ; multiply head_x with 8
+        add t3, t1, t4 ; add head_y with (head_x * 8)
         slli t3, t3, 2 ; multiply by 4 to get the good word in gsa
         addi t2, zero, DIR_UP ; init a register at 2
         addi t5, zero, DIR_DOWN ; init a register at 3 (down direction)
@@ -151,9 +170,11 @@ get_input:
         ret
     ;handle the down case 
     down:
+        ldw t0, HEAD_X(zero) ; load head x position
+        ldw t1, HEAD_Y(zero) ; load head y position 
 
-        slli t4, HEAD_X, 3  ; multiply head_x with 8
-        add t3, HEAD_Y, t4 ; add head_y with (head_x + 8)
+        slli t4, t0, 3  ; multiply head_x with 8
+        add t3, t1, t4 ; add head_y with (head_x * 8)
         slli t3, t3, 2 ; multiply by 4 to get the good word in gsa
         addi t2, zero, DIR_DOWN ; init a register at 3
         addi t5, zero, DIR_UP ; init a register at 2 (up direction)
@@ -166,9 +187,11 @@ get_input:
         ret
     ;handle the right case 
     right:
+        ldw t0, HEAD_X(zero) ; load head x position
+        ldw t1, HEAD_Y(zero) ; load head y position 
 
-        slli t4, HEAD_X, 3  ; multiply head_x with 8
-        add t3, HEAD_Y, t4 ; add head_y with (head_x + 8)
+        slli t4, t0, 3  ; multiply head_x with 8
+        add t3, t1, t4 ; add head_y with (head_x * 8)
         slli t3, t3, DIR_LEFT ; multiply by 4 to get the good word in gsa
         addi t2, zero, DIR_RIGHT ; init a register at 4
         addi t5, zero, 1 ; init a register at 1 (left direction)
@@ -179,33 +202,23 @@ get_input:
         stw  zero, BUTTONS+4(zero) ; put edge button to zero again 
 
         ret
-    ;handle the checkpoiny case 
-    checkpoint:
-
-        slli t4, HEAD_X, 3 ; multiply head_x with 8 
-        add t3, HEAD_Y, t4 ; add head_y with (head_x + 8)
-        slli t3, t3, 2 ; multiply by 4 to get the good word in gsa
-        addi t2, zero, BUTTON_CHECKPOINT ; init a register at 5
-        stw t2, GSA(t3); change gsa
-        addi v0, zero, BUTTON_CHECKPOINT ; init v0 to the good direction's value
-        stw  zero, BUTTONS+4(zero) ; put edge button to zero again 
-
-        ret
+   
 ; END: get_input
 
 
 ; BEGIN: draw_array
 draw_array:
+		addi t1, zero, NB_CELLS 
         addi t0, zero, 0
         addi s1, zero, 0
     ; BEGIN: search_loop
     search_loop:
-        beq s1, NB_CELLS, draw_end ; test if we are at the end of the GSA
+        beq s1, t1, draw_end ; test if we are at the end of the GSA
         slli t3, s1, 2 ; multiply by 4 to get the good word 
         ldw t3 , GSA(t3) ; load the word 
         bne t0, t3, switch_on_led ; check if the leds => LOOK TO THE GOOD CALL TO DO 
         addi s1, s1, 1; if not go to the next word 
-        j search_loop
+        br search_loop
     ; End: search_loop
 
     ; BEGIN: switch_on_led 
@@ -216,13 +229,15 @@ draw_array:
     
         call set_pixel ; call set pixel => LOOK TO THE GOOD CALL 
         addi s1, s1, 1; if not go to the next word 
-        j search_loop
+        br search_loop
     ; END: switch_on_led
 
     ; BEGIN: draw_end
     draw_end:
     ret
     ; END: draw_end 
+
+; END: draw_array
 
 ; END: draw_array
     
