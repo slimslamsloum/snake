@@ -94,14 +94,14 @@ create_food:
 	; check the boundaries 0<=
 	; BEGIN: check_more_than_zero
 	check_more_than_zero: 
-		bgeu t0, t1, check_less
+		bge t0, t1, check_less
 		br create_food
 	; END: check_less
 
 	; check the boundaries <96 
 	; BEGIN: check_less
 	check_less:
-		bltu t0, t2, check_is_snake
+		blt t0, t2, check_is_snake
 		br create_food 
 	;END: check_less
 
