@@ -284,13 +284,13 @@ move_snake:
  slli t4, t4, 2 ; multiply result by 4 
  ldw t3, GSA(t4) ; load word at address GSA + t0
 
- ldw t2, BUTTON_LEFT(zero)
+ addi t2, zero, BUTTON_LEFT
  beq t3, t2, head_left ; head left case
- ldw t2, BUTTON_UP(zero)
+ addi t2, zero, BUTTON_UP
  beq t3, t2, head_up ; head up case
- ldw t2, BUTTON_RIGHT(zero)
+ addi t2, zero, BUTTON_RIGHT
  beq t3, t2, head_right ; head right case
- ldw t2, BUTTON_DOWN(zero)
+ addi t2, zero, BUTTON_DOWN
  beq t3, t2, head_down ; head down case
 
 
@@ -371,13 +371,13 @@ move_snake:
  add t4, t4, t1 ; add tail_y and 8*tail_x
  slli t4, t4, 2 ; multiply result by 4 
 
- ldw t2, BUTTON_LEFT(zero)
+ addi t2, zero, BUTTON_LEFT
  beq t3, t2, tail_left ; tail left case
- ldw t2, BUTTON_UP(zero)
+ addi t2, zero, BUTTON_UP
  beq t3, t2, tail_up ; tail up case
- ldw t2, BUTTON_RIGHT(zero)
+ addi t2, zero, BUTTON_RIGHT
  beq t3, t2, tail_right ; tail right case
- ldw t2, BUTTON_DOWN(zero)
+ addi t2, zero, BUTTON_DOWN
  beq t3, t2, tail_down ; tail down case
 
  ret
