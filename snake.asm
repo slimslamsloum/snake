@@ -54,6 +54,25 @@ addi    sp, zero, LEDS
 ;     This procedure should never return.
 main:
     ; TODO: Finish this procedure.
+
+    call clear_leds
+
+    addi t0, zero, 4
+    stw t0, GSA(zero)
+    addi a0, zero, 0
+
+    loop:
+
+        call get_input
+
+        call move_snake
+
+        call draw_array
+
+        beq zero, zero, loop
+
+        ret
+
     ret
 ; BEGIN: clear_leds
 clear_leds:
@@ -252,9 +271,9 @@ move_snake:
 ; t4 is head/tail gsa
 
 
- ldw t0, 0(HEAD_X) ; load head_x coordinate
+ ldw t0, HEAD_X(zero) ; load head_x coordinate
  slli t4, t0, 3 ; multiply head_x by 8
- ldw t1, 0(HEAD_Y) ; load head_y coordinate
+ ldw t1, HEAD_Y(zero) ; load head_y coordinate
  add t4, t4, t1 ; add head_y and 8*head_x
  slli t4, t4, 2 ; multiply result by 4 
  ldw t3, GSA(t4) ; load word at address GSA + t0
@@ -277,9 +296,11 @@ move_snake:
  head_left: 
 
  addi t0, t0, -1
- stw t0, zero(HEAD_X)
+ stw t0, HEAD_X(zero)
  addi t4, t4, -32
  stw t3, GSA(t4)
+
+ ret
 
  ; END: head_left
 
@@ -289,9 +310,11 @@ move_snake:
  head_up: 
 
  addi t1, t1, -1
- stw t0, zero(HEAD_Y)
+ stw t0, HEAD_Y(zero)
  addi t4, t4, -4
  stw t3, GSA(t4)
+ 
+ ret
 
  ; END: head_up
  
@@ -301,9 +324,11 @@ move_snake:
  head_right:   
 
  addi t0, t0, 1
- stw t0, zero(HEAD_X)
+ stw t0, HEAD_X(zero)
  addi t4, t4, 32
  stw t3, GSA(t4)
+
+ ret
 
  ; END: head_right
 
@@ -312,9 +337,11 @@ move_snake:
  head_down: 
 
  addi t1, t1, 1
- stw t0, zero(HEAD_Y)
+ stw t0, HEAD_Y(zero)
  addi t4, t4, 4
  stw t3, GSA(t4)
+
+ ret
 
  ; END: head_down
 
@@ -323,9 +350,9 @@ move_snake:
 
  no_food:
 
- ldw t0, 0(TAIL_X) ; load tail_x coordinate
+ ldw t0, TAIL_X(zero) ; load tail_x coordinate
  slli t4, t0, 3 ; multiply tail_x by 8
- ldw t1, 0(TAIL_Y) ; load tail_y coordinate
+ ldw t1, TAIL_Y(zero) ; load tail_y coordinate
  add t4, t4, t1 ; add tail_y and 8*tail_x
  slli t4, t4, 2 ; multiply result by 4 
 
@@ -338,6 +365,8 @@ move_snake:
  addi t2, t2, 1 ; t0 is 4
  beq t3, t2, tail_down ; tail down case
 
+ ret
+
  ; END: no_food
 
 
@@ -347,9 +376,11 @@ move_snake:
 
  stw zero, GSA(t4)
  addi t0, t0, -1
- stw t0, zero(TAIL_X)
+ stw t0, TAIL_X(zero)
  addi t4, t4, -32
  stw t3, GSA(t4)
+
+ ret
 
  ; END: tail_left
 
@@ -360,9 +391,11 @@ move_snake:
 
  stw zero, GSA(t4)
  addi t1, t1, -1
- stw t0, zero(TAIL_Y)
+ stw t0, TAIL_Y(zero)
  addi t4, t4, -4
  stw t3, GSA(t4)
+
+ ret
 
  ; END: tail_up
  
@@ -373,9 +406,11 @@ move_snake:
 
  stw zero, GSA(t4)
  addi t0, t0, 1
- stw t0, zero(TAIL_X)
+ stw t0, TAIL_X(zero)
  addi t4, t4, 32
  stw t3, GSA(t4)
+
+ ret
 
  ; END: tail_right
 
@@ -386,9 +421,11 @@ move_snake:
 
  stw zero, GSA(t4)
  addi t1, t1, 1
- stw t0, zero(TAIL_Y)
+ stw t0, TAIL_Y(zero)
  addi t4, t4, 4
  stw t3, GSA(t4)
+
+ ret
 
 ; END: tail_down
 
