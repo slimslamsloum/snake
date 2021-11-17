@@ -226,15 +226,15 @@ get_input:
 
 ; BEGIN: draw_array
 draw_array:
-		addi t1, zero, NB_CELLS 
+		addi s0, zero, NB_CELLS 
         addi t0, zero, 0
         addi s1, zero, 0
     ; BEGIN: search_loop
     search_loop:
-        beq s1, t1, draw_end ; test if we are at the end of the GSA
+        beq s1, s0, draw_end ; test if we are at the end of the GSA
         slli t3, s1, 2 ; multiply by 4 to get the good word 
         ldw t3 , GSA(t3) ; load the word 
-        bne t0, t3, switch_on_led ; check if the leds => LOOK TO THE GOOD CALL TO DO 
+        bne zero, t3, switch_on_led ; check if the leds 
         addi s1, s1, 1; if not go to the next word 
         br search_loop
     ; End: search_loop
@@ -250,7 +250,12 @@ draw_array:
         stw ra, 0(sp)
 
         call set_pixel ; call set pixel => LOOK TO THE GOOD CALL 
-        addi s1, s1, 1; if not go to the next word 
+        
+		;handle the sp
+		ldw ra, 0(sp)
+		addi sp, sp, 4
+		
+        addi s1, s1, 1; go to the next word 
         br search_loop
     ; END: switch_on_led
 
@@ -258,8 +263,6 @@ draw_array:
     draw_end:
     ret
     ; END: draw_end 
-
-; END: draw_array
 
 ; END: draw_array
     
