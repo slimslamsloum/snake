@@ -59,12 +59,13 @@ main:
 
     addi t0, zero, 4
     stw t0, GSA(zero)
-    addi a0, zero, 0
+    
 
     loop:
 
         call get_input
 
+        addi a0, zero, 0
         call move_snake
 
         call draw_array
