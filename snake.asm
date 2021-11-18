@@ -115,6 +115,84 @@ move_snake:
 
 ; BEGIN: save_checkpoint
 save_checkpoint:
+    addi v0, zero, zero     ; init to zero the return value
+    addi t0, zero, 10       ; init the 10 immediate
+    ldw t1, SCORE(zero)     ; load the current score 
+
+    ; BEGIN: ten_loop
+    ten_loop:
+    addi t1, t1, -10                ; sub ten to the score
+    beq t1, zero, saving_procedure  ; check if i am a multiple of 10 
+    blt t1, zero, no_checkpoint     ; no checkpoint procedure
+    br ten_loop                     ; if no test is fullfield the loop
+    ; END; ten_loop
+
+    ; BEGIN: saving_procedure 
+    saving_procedure:
+        addi t0, zero, 1        ; init a bit  
+        addi v0, zero, 1        ; init v0 to 1
+        stw t0, CP_VALID(zero)  ; init the checkpoint 
+
+        ; HEAD_X
+        addi a0, zero, HEAD_X
+        addi a1, zero, CP_HEAD_X
+        call copy_memory
+        
+        ; HEAD_Y
+        addi a0, zero, HEAD_Y           
+        addi a1, zero, CP_HEAD_Y
+        call copy_memory
+        
+        ; TAIL_X 
+        addi a0, zero, TAIL_X
+        addi a1, zero, CP_TAIL_X
+        call copy_memory
+        
+
+        ; TAIL_Y
+        addi a0, zero, TAIL_Y
+        addi a1, zero, CP_TAIL_Y
+        call copy_memory
+        
+
+        ; SCORE
+        addi a0, zero, SCORE
+        addi a1, zero, CP_SCORE
+        call copy_memory
+        
+        ; GSA
+        call saving_GSA 
+
+        ret
+    ; END: saving_procedure 
+
+    ; BEGIN: saving_GSA
+    saving_GSA:
+
+        addi s0, zero, NB_CELLS     ; init a register to the number of word in the GSA 
+
+        ; BEGIN: loop_word
+        loop_word:
+            slli t0, s0, 2 ; multiply by 4 to get the good word in gsa
+            addi a0, zero, GSA(t0)          ; load the good address GSA
+            addi a1, zero, CP_GSA(t0)       ; load the good from CP_GSA
+            call copy_memory                ; call the copy memory process
+            beq s0, zero, return_process    ; testing if reached the end of the GSA
+            addi s0, s0, -1                 ; if not then counter -1
+            br loop_word                    ; branch to the loop again 
+        ; END: loop_word 
+
+        ; BEGIN: return_process
+        return_process:
+            ret
+        ; END: return_process
+    ; END: saving_GSA
+
+    ; BEGIN: no_checkpoint
+    no_checkpoint:
+
+        ret
+    ; END: no_checkpoint
 
 ; END: save_checkpoint
 
@@ -123,6 +201,16 @@ save_checkpoint:
 restore_checkpoint:
 
 ; END: restore_checkpoint
+
+; BEGIN: copy_memory
+copy_memory:
+    ; a0 is the start memory address 
+    ; a1 is the destination memory address 
+    ldw t0, a0(zero)    ; load the memory region
+    stw t0, a1(zero)    ; and copy the good memory region in the destination
+
+    ret
+; END: copy_memory
 
 
 ; BEGIN: blink_score
