@@ -79,6 +79,21 @@ display_score:
 
 ; BEGIN: init_game
 init_game:
+    call clear_leds         ; clear the leds
+
+    stw  zero, HEAD_X(zero) ; init the head x
+    stw  zero, HEAD_Y(zero) ; init the head y
+    stw  zero, TAIL_X(zero) ; init the tail x
+    stw  zero, TAIL_Y(zero) ; init the tail y 
+    stw zero, SCORE(zero)   ; init the score to zero
+    
+    addi t0, zero, 4        ; init the right direction
+    stw t0, GSA(zero)       ; put the right direction 
+    addi a0, zero, zero     ; reset the values that could be important and put some sides effect 
+
+    call create_food        ; create food at random 
+    call display_score      ; display the initial score 
+    call draw_array         ; switch on and init the goods leds 
 
 ; END: init_game
 
