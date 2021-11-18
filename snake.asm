@@ -72,17 +72,18 @@ set_pixel:
 
 ; BEGIN: display_score
 display_score:
+
     ldw t0, SEVEN_SEGS+8(zero) ;load the 2nd seven segment
     ldw t1, SEVEN_SEGS+12(zero) ;load the 3rd sevent segment
     addi t2, zero, 9 ; init an imm 
-    addi t2, zero, digit_map(t2) ; init a register to the value  9
+    ldw t2, digit_map(t2) ; init a register to the value  9
     ldw t3, digit_map(zero) ; load the zero value in the digit map
 
     ; init the first two to zero
     stw t3,  SEVEN_SEGS(zero) 
     stw t3,  SEVEN_SEGS+4(zero)
 
-    ; test if we reched 9 
+    ; test if we reached 9 
     beq t1, t2, enable_the_2nd
     addi s1, s1, 1 ; increment by one 
     stw zero, SEVEN_SEGS+12(s1)
