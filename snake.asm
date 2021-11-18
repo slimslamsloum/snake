@@ -158,9 +158,10 @@ blink_score:
 
     ; BEGIN: blink_procedure
     blink_procedure:
-        slli t0, s1, 1 ; modulo 2 
+        slli t0, s1, 1              ; modulo 2 
         beq t0, zero, display_score ; if the counter modulo 2 then switch on the light
-        bne t0, zero, switch_off; if the counter is not modulo 2 then switch off 
+        bne t0, zero, switch_off    ; if the counter is not modulo 2 then switch off 
+        call wait_procedure         ; call the waiting procedure 
         addi s1, s1, -1
         jmpi blink_procedure
     ; END: blink_procedure
