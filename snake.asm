@@ -43,6 +43,8 @@
 .equ    ARG_HUNGRY,     0       ; a0 argument for move_snake when food wasn't eaten
 .equ    ARG_FED,        1       ; a0 argument for move_snake when food was eaten
 
+; Param
+.equ    TIMER,          15000   ; latence 
 
 ; initialize stack pointer
 addi    sp, zero, LEDS
@@ -72,44 +74,34 @@ set_pixel:
 
 ; BEGIN: display_score
 display_score:
+    ldw t0, SCORE(zero) ;load the score 
 
-    ldw t0, SEVEN_SEGS+8(zero) ;load the 2nd seven segment
-    ldw t1, SEVEN_SEGS+12(zero) ;load the 3rd sevent segment
-    addi t2, zero, 9 ; init an imm 
-    ldw t2, digit_map(t2) ; init a register to the value  9
-    ldw t3, digit_map(zero) ; load the zero value in the digit map
+    addi t1, zero, zero
+    addi t2, zero, zero
 
-    ; init the first two to zero
-    stw t3,  SEVEN_SEGS(zero) 
-    stw t3,  SEVEN_SEGS+4(zero)
+    ;BEGIN: unit_loop
+    unit_loop:
+        addi t2, t2, 1
+        addi t0, t0, -10
+        blt t0, zero, set_process
+        br unit_loop
+    ; END: unit_loop
 
-    ; test if we reached 9 
-    beq t1, t2, enable_the_2nd
-    addi s1, s1, 1 ; increment by one 
-    stw zero, SEVEN_SEGS+12(s1)
-
-
-    ; BEGIN
-    enable_the_2nd:
-        addi s2, s2, 1 ; increment my pointer
-        beq t0, t2, reset_all ; test if 2 has reach 9 
-        stw zero, SEVEN_SEGS+12(t3) ; reset the value to 0 
-        ldw t3, digit_map(s2) ; load the corresponding value
-        stw t3,  SEVEN_SEGS+8(zero) ; store 1 in the 2nd
+    ; BEGIN: set_process
+    set_process:
+        addi t1, t1, 10
+        addi t2, t2, -1
 
         ret
-    ; END
+    ;END: set_process
 
-    ; BEGIN
-    reset_all:
-        stw zero, SEVEN_SEGS+8(t3) ; reset the value to 0
-        stw zero, SEVEN_SEGS+12(t3) ; reset the value to 0 
-
-        ret 
-    ; END 
-
-    ret
+    ldw t1, digit_map(t1) ; load
+    ldw t2, digit_map(t2) ; load
+    stw t1, SEVEN_SEGS+12(zero) ; change the value 
+    stw t2, SEVEN_SEGS+8(zero) ; change the value 
+    
 ; END: display_score
+
 
 
 ; BEGIN: init_game
@@ -163,7 +155,26 @@ restore_checkpoint:
 ; BEGIN: blink_score
 blink_score:
 
+
 ; END: blink_score
+
+; BEGIN: wait_procedure
+wait_procedure:
+    addi t0, zero, TIMER 
+
+    ; BEGIN
+    loop_time:
+        beq t0, zero, return_procedure
+        addi t0, t0, -1
+    ; END
+
+    ; BEGIN
+    return_procedure:
+        ret
+    ; END
+
+; EnD: wait_procedure
+
 ; BEGIN: digit_map
 digit_map:
     .word 0xFC ; 0
