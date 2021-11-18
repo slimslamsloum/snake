@@ -154,18 +154,40 @@ restore_checkpoint:
 
 ; BEGIN: blink_score
 blink_score:
+    addi s1, zero, 6
 
+    ; BEGIN: blink_procedure
+    blink_procedure:
+        slli t0, s1, 1 ; modulo 2 
+        beq t0, zero, switch_on ; if the counter modulo 2 then switch on the light
+        bne t0, zero, switch_off; if the counter is not modulo 2 then switch off 
+        addi s1, s1, -1
+        jmpi blink_procedure
+    ; END: blink_procedure
+
+    ; BEGIN: switch_on 
+    switch_on:
+        call display_score ; switch on the light 
+    ; END: switch_on 
+
+    ; BEGIN: switch_off
+    switch_off:
+        stw zero, SEVEN_SEGS(zero)   ; switch off the light
+        stw zero, SEVEN_SEGS+4(zero) ; switch off the light
+        stw zero, SEVEN_SEGS+8(zero) ; switch off the light 
+        stw zero, SEVEN_SEGS+12(zero); switch off the light 
+    ; END: switch_off 
 
 ; END: blink_score
 
 ; BEGIN: wait_procedure
 wait_procedure:
-    addi t0, zero, TIMER 
+    addi s0, zero, TIMER 
 
     ; BEGIN
     loop_time:
-        beq t0, zero, return_procedure
-        addi t0, t0, -1
+        beq s0, zero, return_procedure
+        addi s0, t0, -1
     ; END
 
     ; BEGIN
