@@ -210,9 +210,9 @@ get_input:
 
         slli t4, t0, 3  ; multiply head_x with 8
         add t3, t1, t4 ; add head_y with (head_x * 8)
-        slli t3, t3, DIR_LEFT ; multiply by 4 to get the good word in gsa
+        slli t3, t3, 2 ; multiply by 4 to get the good word in gsa
         addi t2, zero, DIR_RIGHT ; init a register at 4
-        addi t5, zero, 1 ; init a register at 1 (left direction)
+        addi t5, zero, DIR_LEFT ; init a register at 1 (left direction)
         ldw t4, GSA(t3); load the current value that is in the gsa
         beq t4, t5, none ; if it indicate an opposite direction ignore the action
         stw t2, GSA(t3); change gsa
