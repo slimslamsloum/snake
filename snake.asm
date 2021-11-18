@@ -86,6 +86,7 @@ init_game:
 ; BEGIN: create_food
 create_food:
 
+    ; init the state 
  	ldw t0, RANDOM_NUM(zero)
     andi t0, t0, 255
 	addi t1, zero, 0
