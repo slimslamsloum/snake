@@ -72,8 +72,42 @@ set_pixel:
 
 ; BEGIN: display_score
 display_score:
-    
-    ret 
+    ldw t0, SEVEN_SEGS+8(zero) ;load the 2nd seven segment
+    ldw t1, SEVEN_SEGS+12(zero) ;load the 3rd sevent segment
+    addi t2, zero, 9 ; init an imm 
+    addi t2, zero, digit_map(t2) ; init a register to the value  9
+    ldw t3, digit_map(zero) ; load the zero value in the digit map
+
+    ; init the first two to zero
+    stw t3,  SEVEN_SEGS(zero) 
+    stw t3,  SEVEN_SEGS+4(zero)
+
+    ; test if we reched 9 
+    beq t1, t2, enable_the_2nd
+    addi s1, s1, 1 ; increment by one 
+    stw zero, SEVEN_SEGS+12(s1)
+
+
+    ; BEGIN
+    enable_the_2nd:
+        addi s2, s2, 1 ; increment my pointer
+        beq t0, t2, reset_all ; test if 2 has reach 9 
+        stw zero, SEVEN_SEGS+12(t3) ; reset the value to 0 
+        ldw t3, digit_map(s2) ; load the corresponding value
+        stw t3,  SEVEN_SEGS+8(zero) ; store 1 in the 2nd
+
+        ret
+    ; END
+
+    ; BEGIN
+    reset_all:
+        stw zero, SEVEN_SEGS+8(t3) ; reset the value to 0
+        stw zero, SEVEN_SEGS+12(t3) ; reset the value to 0 
+
+        ret 
+    ; END 
+
+    ret
 ; END: display_score
 
 
