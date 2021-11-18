@@ -87,7 +87,7 @@ init_game:
     stw  zero, TAIL_Y(zero) ; init the tail y 
     stw zero, SCORE(zero)   ; init the score to zero
     
-    addi t0, zero, 4        ; init the right direction
+    addi t0, zero, DIR_RIGHT       ; init the right direction
     stw t0, GSA(zero)       ; put the right direction 
     addi a0, zero, zero     ; reset the values that could be important and put some sides effect 
 
