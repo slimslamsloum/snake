@@ -282,7 +282,7 @@ move_snake:
  ldw t1, HEAD_Y(zero) ; load head_y coordinate
  add t4, t4, t1 ; add head_y and 8*head_x
  slli t4, t4, 2 ; multiply result by 4 
- ldw t3, GSA(t4) ; load word at address GSA + t0
+ ldw t3, GSA(t4) ; load word at address GSA + t4
 
  addi t2, zero, BUTTON_LEFT
  beq t3, t2, head_left ; head left case
@@ -320,8 +320,7 @@ move_snake:
  addi t4, t4, -4
  stw t3, GSA(t4)
 
- addi t5, zero, 1
- bne a1, t5, no_food ; branch to no_food if a1 is not 1
+ beq a1, zero, no_food ; branch to no_food if a1 is 0
  
  ret
 
@@ -337,8 +336,7 @@ move_snake:
  addi t4, t4, 32
  stw t3, GSA(t4)
 
- addi t5, zero, 1
- bne a1, t5, no_food ; branch to no_food if a1 is not 1
+ beq a1, zero, no_food ; branch to no_food if a1 is 0
 
  ret
 
@@ -353,8 +351,7 @@ move_snake:
  addi t4, t4, 4
  stw t3, GSA(t4)
 
- addi t5, zero, 1
- bne a1, t5, no_food ; branch to no_food if a1 is not 1
+ beq a1, zero, no_food ; branch to no_food if a1 is 0
 
  ret
 
