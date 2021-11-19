@@ -303,7 +303,7 @@ move_snake:
  addi t4, t4, -32
  stw t3, GSA(t4)
 
- beq a1, zero, no_food ; branch to no_food if a1 is 0
+ beq a0, zero, no_food ; branch to no_food if a1 is 0
 
  ret
 
@@ -319,7 +319,7 @@ move_snake:
  addi t4, t4, -4
  stw t3, GSA(t4)
 
- beq a1, zero, no_food ; branch to no_food if a1 is 0
+ beq a0, zero, no_food ; branch to no_food if a1 is 0
  
  ret
 
@@ -335,7 +335,7 @@ move_snake:
  addi t4, t4, 32
  stw t3, GSA(t4)
 
- beq a1, zero, no_food ; branch to no_food if a1 is 0
+ beq a0, zero, no_food ; branch to no_food if a1 is 0
 
  ret
 
@@ -350,7 +350,7 @@ move_snake:
  addi t4, t4, 4
  stw t3, GSA(t4)
 
- beq a1, zero, no_food ; branch to no_food if a1 is 0
+ beq a0, zero, no_food ; branch to no_food if a1 is 0
 
  ret
 
