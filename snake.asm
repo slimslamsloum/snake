@@ -190,12 +190,14 @@ addi t0, t0, -1
 addi t4, t4, -32
 ldw t3, GSA(t4) ; load word at address GSA + t4
 
-
 bge t0, t5, end_game ; x coordinate is out of range
 blt t0, zero, end_game ; x coordinate is out of range
 bge t1, t2, end_game ; y coordinate is out of range
 blt t1, zero, end_game ; y coordinate is out of range
 bne t3, zero, end_game ; collide with itself
+
+addi t2, zero, 5
+beq t3, t2, is_food
 
 ret
 
@@ -215,6 +217,9 @@ bge t1, t2, end_game ; y coordinate is out of range
 blt t1, zero, end_game ; y coordinate is out of range
 bne t3, zero, end_game ; collide with itself
 
+addi t2, zero, 5
+beq t3, t2, is_food
+
 ret
 
 get_right:
@@ -226,12 +231,14 @@ addi t0, t0, 1
 addi t4, t4, 32
 ldw t3, GSA(t4) ; load word at address GSA + t4
 
-
 bge t0, t5, end_game ; x coordinate is out of range
 blt t0, zero, end_game ; x coordinate is out of range
 bge t1, t2, end_game ; y coordinate is out of range
 blt t1, zero, end_game ; y coordinate is out of range
 bne t3, zero, end_game ; collide with itself
+
+addi t2, zero, 5
+beq t3, t2, is_food
 
 ret
 
@@ -250,10 +257,22 @@ bge t1, t2, end_game ; y coordinate is out of range
 blt t1, zero, end_game ; y coordinate is out of range
 bne t3, zero, end_game ; collide with itself
 
+addi t2, zero, 5
+beq t3, t2, is_food
+
+ldw t2, 0(v0)
+stw t5, 1,(zero)
+blt t2, t5, no_collision
+stw t5, 3,(zero)
+bge t2, t5, no_collision
+
 ret
 
 
 is_food:
+
+addi t0, zero, 1
+stw t0, zero(v0)
 
 ret
 
@@ -264,6 +283,12 @@ stw t0, zero(v0)
 
 ret
 
+no_collision:
+
+addi t0, zero, 0
+stw t0, zero(v0)
+
+ret
 
 ; END: hit_test
 
@@ -453,70 +478,61 @@ move_snake:
 
 
 ; BEGIN: head_left
-
  head_left: 
 
- addi t0, t0, -1
- stw t0, HEAD_X(zero)
- addi t4, t4, -32
- stw t3, GSA(t4)
+ addi t0, t0, -1 ; substract 1 from x coordinates
+ stw t0, HEAD_X(zero) ; store in head_x new value
+ addi t4, t4, -32 ; get new corresponding position of head
+ stw t3, GSA(t4) ; store in new position of head the direction
 
  beq a0, zero, no_food ; branch to no_food if a1 is 0
 
  ret
-
  ; END: head_left
 
 
 ; BEGIN: head_up
-
  head_up: 
 
- addi t1, t1, -1
- stw t1, HEAD_Y(zero)
- addi t4, t4, -4
- stw t3, GSA(t4)
+ addi t1, t1, -1 ; substract 1 from y coordinates
+ stw t1, HEAD_Y(zero) ; store in head_y new value
+ addi t4, t4, -4 ; get new corresponding position of head
+ stw t3, GSA(t4) ; store in new position of head the direction
 
  beq a0, zero, no_food ; branch to no_food if a1 is 0
  
  ret
-
  ; END: head_up
  
 
 ; BEGIN: head_right
-
  head_right:   
 
- addi t0, t0, 1
- stw t0, HEAD_X(zero)
- addi t4, t4, 32
- stw t3, GSA(t4)
+ addi t0, t0, 1 ; add 1 to x coordinates
+ stw t0, HEAD_X(zero) ; store in head_x new value
+ addi t4, t4, 32 ; get new corresponding position of head
+ stw t3, GSA(t4) ; store in new position of head the direction
 
  beq a0, zero, no_food ; branch to no_food if a1 is 0
 
  ret
-
  ; END: head_right
 
 ; BEGIN: head_down
-
  head_down: 
 
- addi t1, t1, 1
- stw t1, HEAD_Y(zero)
- addi t4, t4, 4
- stw t3, GSA(t4)
+ addi t1, t1, 1 ; add 1 to y coordinates
+ stw t1, HEAD_Y(zero) ; store in head_y new value
+ addi t4, t4, 4 ; get new corresponding position of head
+ stw t3, GSA(t4) ; store in new position of head the direction
 
  beq a0, zero, no_food ; branch to no_food if a1 is 0
 
  ret
-
  ; END: head_down
 
 
 ; BEGIN: no_food
-
  no_food:
 
  ldw t0, TAIL_X(zero) ; load tail_x coordinate
@@ -540,47 +556,41 @@ move_snake:
 
 
 ; BEGIN: tail_left
-
  tail_left: 
 
- stw zero, GSA(t4)
- addi t0, t0, -1
- stw t0, TAIL_X(zero)
- addi t4, t4, -32
- stw t3, GSA(t4)
+ stw zero, GSA(t4) ; previous tail value in GSA is 0
+ addi t0, t0, -1 ; tail_x is substracted by 1
+ stw t0, TAIL_X(zero) ; store new value of tail_x in TAIL_X
+ addi t4, t4, -32 ; get new corresponding value of tail in GSA
+ stw t3, GSA(t4) ; store direction of new tail in GSA
 
  ret
-
  ; END: tail_left
 
 
 ; BEGIN: tail_up
-
  tail_up: 
 
- stw zero, GSA(t4)
- addi t1, t1, -1
- stw t1, TAIL_Y(zero)
- addi t4, t4, -4
- stw t3, GSA(t4)
+ stw zero, GSA(t4) ; previous tail value in GSA is 0
+ addi t1, t1, -1 ; tail_y is substracted by 1
+ stw t1, TAIL_Y(zero) ; store new value of tail_y in TAIL_Y
+ addi t4, t4, -4 ; get new corresponding value of tail in GSA
+ stw t3, GSA(t4) ; store direction of new tail in GSA
 
  ret
-
  ; END: tail_up
  
      
 ; BEGIN: tail_right
-
  tail_right:   
 
- stw zero, GSA(t4)
- addi t0, t0, 1
- stw t0, TAIL_X(zero)
- addi t4, t4, 32
- stw t3, GSA(t4)
+ stw zero, GSA(t4) ; previous tail value in GSA is 0
+ addi t0, t0, 1 ; we add 1 to tail_x
+ stw t0, TAIL_X(zero) ; store new value of tail_x in TAIL_X
+ addi t4, t4, 32 ; get new corresponding value of tail in GSA
+ stw t3, GSA(t4) ; store direction of new tail in GSA
 
  ret
-
  ; END: tail_right
 
 
@@ -588,11 +598,11 @@ move_snake:
 
  tail_down: 
 
- stw zero, GSA(t4)
- addi t1, t1, 1
- stw t1, TAIL_Y(zero)
- addi t4, t4, 4
- stw t3, GSA(t4)
+ stw zero, GSA(t4) ; previous tail value in GSA is 0
+ addi t1, t1, 1 ; we add 1 to tail_y
+ stw t1, TAIL_Y(zero) ; store new value of tail_y in TAIL_Y
+ addi t4, t4, 4 ; get new corresponding value of tail in GSA
+ stw t3, GSA(t4) ; store direction of new tail in GSA
 
  ret
 
