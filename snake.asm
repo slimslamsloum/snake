@@ -121,7 +121,40 @@ init_game:
 ; BEGIN: create_food
 create_food:
 
-; END: create_food
+    ; init the state 
+ 	ldw t0, RANDOM_NUM(zero)
+    andi t0, t0, 255
+	addi t1, zero, 0
+	addi t2, zero, 96 
+	addi t3, zero, FOOD
+
+	; check the boundaries 0<=
+	; BEGIN: check_more_than_zero
+	check_more_than_zero: 
+		bge t0, t1, check_less
+		br create_food
+	; END: check_less
+
+	; check the boundaries <96 
+	; BEGIN: check_less
+	check_less:
+		blt t0, t2, check_is_snake
+		br create_food 
+	;END: check_less
+
+	; check if we overlap with the snake
+	; BEGIN: check_is_snake
+	check_is_snake:
+		slli t0, t0, 2
+		ldw t2, GSA(t0) 
+		bne t2, t1, create_food
+		stw t3, GSA(t0)
+		
+		ret
+	; END: check_is_snake
+		
+
+	; END: create_food
 
 
 ; BEGIN: hit_test
