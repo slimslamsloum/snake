@@ -181,10 +181,11 @@ beq t3, t2, get_right ; head right case
 addi t2, zero, BUTTON_DOWN
 beq t3, t2, get_down ; head down case
 
+; BEGIN: get_left
 get_left:
 
-ldw t2, NB_COLS(zero)
-ldw t5, NB_ROWS(zero)
+ldw t2, NB_COLS(zero)  
+ldw t5, NB_ROWS(zero) 
 
 addi t0, t0, -1
 addi t4, t4, -32
@@ -197,11 +198,18 @@ blt t1, zero, end_game ; y coordinate is out of range
 bne t3, zero, end_game ; collide with itself
 
 addi t2, zero, 5
-beq t3, t2, is_food
+beq t3, t2, is_food ; collision with food
+
+ldw t2, 0(v0) ; load in t2 the value of v0
+stw t5, 1,(zero) ; store in t5 the value 1
+blt t2, t5, no_collision ; branch to no_collision if v0 is smaller than 1
+stw t5, 3,(zero) ; store in t5 the value 3
+bge t2, t5, no_collision ; branch to no_collision if v0 is bigger or equal than 3
 
 ret
+; END: get_left
 
-
+; BEGIN: get_up
 get_up:
 
 ldw t2, NB_COLS(zero)
@@ -218,10 +226,18 @@ blt t1, zero, end_game ; y coordinate is out of range
 bne t3, zero, end_game ; collide with itself
 
 addi t2, zero, 5
-beq t3, t2, is_food
+beq t3, t2, is_food ; collision with food
+
+ldw t2, 0(v0) ; load in t2 the value of v0
+stw t5, 1,(zero) ; store in t5 the value 1
+blt t2, t5, no_collision ; branch to no_collision if v0 is smaller than 1
+stw t5, 3,(zero) ; store in t5 the value 3
+bge t2, t5, no_collision ; branch to no_collision if v0 is bigger or equal than 3
 
 ret
+; END: get_up
 
+; BEGIN: get_right
 get_right:
 
 ldw t2, NB_COLS(zero)
@@ -238,10 +254,18 @@ blt t1, zero, end_game ; y coordinate is out of range
 bne t3, zero, end_game ; collide with itself
 
 addi t2, zero, 5
-beq t3, t2, is_food
+beq t3, t2, is_food ; collision with food
+
+ldw t2, 0(v0) ; load in t2 the value of v0
+stw t5, 1,(zero) ; store in t5 the value 1
+blt t2, t5, no_collision ; branch to no_collision if v0 is smaller than 1
+stw t5, 3,(zero) ; store in t5 the value 3
+bge t2, t5, no_collision ; branch to no_collision if v0 is bigger or equal than 3
 
 ret
+; END: get_right
 
+; BEGIN: get_down
 get_down:
 
 ldw t2, NB_COLS(zero)
@@ -258,37 +282,43 @@ blt t1, zero, end_game ; y coordinate is out of range
 bne t3, zero, end_game ; collide with itself
 
 addi t2, zero, 5
-beq t3, t2, is_food
+beq t3, t2, is_food ; collision with food
 
-ldw t2, 0(v0)
-stw t5, 1,(zero)
-blt t2, t5, no_collision
-stw t5, 3,(zero)
-bge t2, t5, no_collision
+ldw t2, 0(v0) ; load in t2 the value of v0
+stw t5, 1,(zero) ; store in t5 the value 1
+blt t2, t5, no_collision ; branch to no_collision if v0 is smaller than 1
+stw t5, 3,(zero) ; store in t5 the value 3
+bge t2, t5, no_collision ; branch to no_collision if v0 is bigger or equal than 3
 
 ret
+; END: get_down
 
-
+; BEGIN: is_food
 is_food:
 
 addi t0, zero, 1
 stw t0, zero(v0)
 
 ret
+; END: is_food
 
+; BEGIN: end_game
 end_game:
 
 addi t0, zero, 2
 stw t0, zero(v0)
 
 ret
+; END: end_game
 
+; BEGIN: no_collision
 no_collision:
 
 addi t0, zero, 0
 stw t0, zero(v0)
 
 ret
+; END: no_collision
 
 ; END: hit_test
 
