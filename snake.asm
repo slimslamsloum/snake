@@ -117,35 +117,34 @@ get_input:
     ldw t0, BUTTONS+4(zero) ; load edge capture button
 
     ;none case
-    andi t0, t0, 31 ; mask the buttons to get the fourth firts bits
-    addi t2, zero, 1; init a bit
-    addi t1, zero, 16; init a mask
-    and t1, t0, t1 ; mask it
+    andi t0, t0, 63 ; mask the buttons to get the fourth firts bits
+    addi t1, zero, 32; init a mask
+    and t2, t0, t1 ; mask it
     beq t1, t2, none; test for checkpoint case 
 
     ;right case
     srai t1, t1, 1 ; shift again
-    and t1, t0, t1 ; mask it
+    and t2, t0, t1 ; mask it
     beq t1, t2, right ; for right case 
 
     ;down case
     srai t1, t1, 1 ; shift again 
-    and t1, t0, t1 ; mask it
+    and t2, t0, t1 ; mask it
     beq t1, t2, down ; for down case 
 
     ;up case
     srai t1, t1, 1 ; shift again
-    and t1, t0, t1 ; mask it 
+    and t2, t0, t1 ; mask it 
     beq t1, t2, up ; for up case 
     
     ;left case
     srai t1, t1, 1 ; shift again 
-    and t1, t0, t1 ; mask it
+    and t2, t0, t1 ; mask it
     beq t1, t2, left ; for left case 
 
     ;none case 
     srai t1, t1, 1 ; shift again 
-    and t1, t0, t1 ; mask it
+    and t2, t0, t1 ; mask it
     beq t1, t2, none ; for none case 
 
     ; handle none case
