@@ -43,6 +43,7 @@
 .equ    ARG_HUNGRY,     0       ; a0 argument for move_snake when food wasn't eaten
 .equ    ARG_FED,        1       ; a0 argument for move_snake when food was eaten
 
+
 ; initialize stack pointer
 addi    sp, zero, LEDS
 
