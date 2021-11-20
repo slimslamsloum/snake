@@ -77,11 +77,31 @@ main:
 ; BEGIN: clear_leds
 clear_leds:
 
+    stw zero, LEDS(zero)
+    stw zero, LEDS+4(zero)
+    stw zero, LEDS+8(zero)
+
+    ret
+
 ; END: clear_leds
 
 
 ; BEGIN: set_pixel
 set_pixel:
+
+    andi t0, a0, 3 ; t0 = a0 mod 4
+    slli t0, t0, 3 ; multiply t0 by 8  
+    add t0, a1, t0 ; t0 = a1+t0
+    addi t1, zero, 1 ; t1 = 1
+    sll t0, t1, t0 ; shift t1 by t0
+    srli t2, a0, 2 ; a0 is divided by 4 (division entière)
+    slli t2, t2, 2 ; t2 is multiplied by 4
+    addi t2, t2, LEDS ; t2 has correct leds address
+    ldw t3, 0(t2) ; get the previous state of the leds
+    or t3, t3, t0 ; combine with new turned on pixel 
+    stw t3, 0(t2) ; store new state of pixels in correct address
+
+    ret
 
 ; END: set_pixel
 
