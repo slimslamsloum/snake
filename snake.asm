@@ -160,6 +160,111 @@ create_food:
 ; BEGIN: hit_test
 hit_test:
 
+; t0 and t1 will be coordinates of next head position
+; t4 will be address in gsa of next head position
+; t2 is columns
+; t5 is rows
+
+ldw t0, HEAD_X(zero) ; load head_x coordinate
+slli t4, t0, 3 ; multiply head_x by 8
+ldw t1, HEAD_Y(zero) ; load head_y coordinate
+add t4, t4, t1 ; add head_y and 8*head_x
+slli t4, t4, 2 ; multiply result by 4 
+ldw t3, GSA(t4) ; load word at address GSA + t4
+
+addi t2, zero, BUTTON_LEFT
+beq t3, t2, get_left ; head left case
+addi t2, zero, BUTTON_UP
+beq t3, t2, get_up ; head up case
+addi t2, zero, BUTTON_RIGHT
+beq t3, t2, get_right ; head right case
+addi t2, zero, BUTTON_DOWN
+beq t3, t2, get_down ; head down case
+
+get_left:
+
+ldw t2, NB_COLS(zero)
+ldw t5, NB_ROWS(zero)
+
+addi t0, t0, -1
+addi t4, t4, -32
+ldw t3, GSA(t4) ; load word at address GSA + t4
+
+
+bge t0, t5, end_game ; x coordinate is out of range
+blt t0, zero, end_game ; x coordinate is out of range
+bge t1, t2, end_game ; y coordinate is out of range
+blt t1, zero, end_game ; y coordinate is out of range
+bne t3, zero, end_game ; collide with itself
+
+ret
+
+
+get_up:
+
+ldw t2, NB_COLS(zero)
+ldw t5, NB_ROWS(zero)
+
+addi t1, t1, -1
+addi t4, t4, -4
+ldw t3, GSA(t4) ; load word at address GSA + t4
+
+bge t0, t5, end_game ; x coordinate is out of range
+blt t0, zero, end_game ; x coordinate is out of range
+bge t1, t2, end_game ; y coordinate is out of range
+blt t1, zero, end_game ; y coordinate is out of range
+bne t3, zero, end_game ; collide with itself
+
+ret
+
+get_right:
+
+ldw t2, NB_COLS(zero)
+ldw t5, NB_ROWS(zero)
+
+addi t0, t0, 1
+addi t4, t4, 32
+ldw t3, GSA(t4) ; load word at address GSA + t4
+
+
+bge t0, t5, end_game ; x coordinate is out of range
+blt t0, zero, end_game ; x coordinate is out of range
+bge t1, t2, end_game ; y coordinate is out of range
+blt t1, zero, end_game ; y coordinate is out of range
+bne t3, zero, end_game ; collide with itself
+
+ret
+
+get_down:
+
+ldw t2, NB_COLS(zero)
+ldw t5, NB_ROWS(zero)
+
+addi t1, t1, 1
+addi t4, t4, 4
+ldw t3, GSA(t4) ; load word at address GSA + t4
+
+bge t0, t5, end_game ; x coordinate is out of range
+blt t0, zero, end_game ; x coordinate is out of range
+bge t1, t2, end_game ; y coordinate is out of range
+blt t1, zero, end_game ; y coordinate is out of range
+bne t3, zero, end_game ; collide with itself
+
+ret
+
+
+is_food:
+
+ret
+
+end_game:
+
+addi t0, zero, 2
+stw t0, zero(v0)
+
+ret
+
+
 ; END: hit_test
 
 
