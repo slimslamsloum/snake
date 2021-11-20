@@ -201,9 +201,9 @@ addi t2, zero, 5
 beq t3, t2, is_food ; collision with food
 
 ldw t2, 0(v0) ; load in t2 the value of v0
-stw t5, 1,(zero) ; store in t5 the value 1
+addi t5, zero, 1 ; store in t5 the value 1
 blt t2, t5, no_collision ; branch to no_collision if v0 is smaller than 1
-stw t5, 3,(zero) ; store in t5 the value 3
+addi t5, zero, 3 ; store in t5 the value 3
 bge t2, t5, no_collision ; branch to no_collision if v0 is bigger or equal than 3
 
 ret
@@ -229,9 +229,9 @@ addi t2, zero, 5
 beq t3, t2, is_food ; collision with food
 
 ldw t2, 0(v0) ; load in t2 the value of v0
-stw t5, 1,(zero) ; store in t5 the value 1
+addi t5, zero, 1 ; store in t5 the value 1
 blt t2, t5, no_collision ; branch to no_collision if v0 is smaller than 1
-stw t5, 3,(zero) ; store in t5 the value 3
+addi t5, zero, 3 ; store in t5 the value 3
 bge t2, t5, no_collision ; branch to no_collision if v0 is bigger or equal than 3
 
 ret
@@ -257,9 +257,9 @@ addi t2, zero, 5
 beq t3, t2, is_food ; collision with food
 
 ldw t2, 0(v0) ; load in t2 the value of v0
-stw t5, 1,(zero) ; store in t5 the value 1
+addi t5, zero, 1 ; store in t5 the value 1
 blt t2, t5, no_collision ; branch to no_collision if v0 is smaller than 1
-stw t5, 3,(zero) ; store in t5 the value 3
+addi t5, zero, 3 ; store in t5 the value 3
 bge t2, t5, no_collision ; branch to no_collision if v0 is bigger or equal than 3
 
 ret
@@ -285,9 +285,9 @@ addi t2, zero, 5
 beq t3, t2, is_food ; collision with food
 
 ldw t2, 0(v0) ; load in t2 the value of v0
-stw t5, 1,(zero) ; store in t5 the value 1
+addi t5, zero, 1 ; store in t5 the value 1
 blt t2, t5, no_collision ; branch to no_collision if v0 is smaller than 1
-stw t5, 3,(zero) ; store in t5 the value 3
+addi t5, zero, 3 ; store in t5 the value 3
 bge t2, t5, no_collision ; branch to no_collision if v0 is bigger or equal than 3
 
 ret
@@ -296,8 +296,8 @@ ret
 ; BEGIN: is_food
 is_food:
 
-addi t0, zero, 1
-stw t0, zero(v0)
+addi v0, zero, 1
+
 
 ret
 ; END: is_food
@@ -305,8 +305,8 @@ ret
 ; BEGIN: end_game
 end_game:
 
-addi t0, zero, 2
-stw t0, zero(v0)
+addi v0, zero, 2
+
 
 ret
 ; END: end_game
@@ -314,8 +314,8 @@ ret
 ; BEGIN: no_collision
 no_collision:
 
-addi t0, zero, 0
-stw t0, zero(v0)
+addi v0, zero, 0
+
 
 ret
 ; END: no_collision
