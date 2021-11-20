@@ -402,7 +402,7 @@ move_snake:
 
  stw zero, GSA(t4)
  addi t1, t1, -1
- stw t0, TAIL_Y(zero)
+ stw t1, TAIL_Y(zero)
  addi t4, t4, -4
  stw t3, GSA(t4)
 
@@ -432,7 +432,7 @@ move_snake:
 
  stw zero, GSA(t4)
  addi t1, t1, 1
- stw t0, TAIL_Y(zero)
+ stw t1, TAIL_Y(zero)
  addi t4, t4, 4
  stw t3, GSA(t4)
 
