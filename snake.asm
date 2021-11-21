@@ -160,6 +160,166 @@ create_food:
 ; BEGIN: hit_test
 hit_test:
 
+; t0 and t1 will be coordinates of next head position
+; t4 will be address in gsa of next head position
+; t2 is columns
+; t5 is rows
+
+ldw t0, HEAD_X(zero) ; load head_x coordinate
+slli t4, t0, 3 ; multiply head_x by 8
+ldw t1, HEAD_Y(zero) ; load head_y coordinate
+add t4, t4, t1 ; add head_y and 8*head_x
+slli t4, t4, 2 ; multiply result by 4 
+ldw t3, GSA(t4) ; load word at address GSA + t4
+
+addi t2, zero, BUTTON_LEFT
+beq t3, t2, get_left ; head left case
+addi t2, zero, BUTTON_UP
+beq t3, t2, get_up ; head up case
+addi t2, zero, BUTTON_RIGHT
+beq t3, t2, get_right ; head right case
+addi t2, zero, BUTTON_DOWN
+beq t3, t2, get_down ; head down case
+
+; BEGIN: get_left
+get_left:
+
+ldw t2, NB_COLS(zero)  
+ldw t5, NB_ROWS(zero) 
+
+addi t0, t0, -1
+addi t4, t4, -32
+ldw t3, GSA(t4) ; load word at address GSA + t4
+
+bge t0, t5, end_game ; x coordinate is out of range
+blt t0, zero, end_game ; x coordinate is out of range
+bge t1, t2, end_game ; y coordinate is out of range
+blt t1, zero, end_game ; y coordinate is out of range
+bne t3, zero, end_game ; collide with itself
+
+addi t2, zero, 5
+beq t3, t2, is_food ; collision with food
+
+ldw t2, 0(v0) ; load in t2 the value of v0
+addi t5, zero, 1 ; store in t5 the value 1
+blt t2, t5, no_collision ; branch to no_collision if v0 is smaller than 1
+addi t5, zero, 3 ; store in t5 the value 3
+bge t2, t5, no_collision ; branch to no_collision if v0 is bigger or equal than 3
+
+ret
+; END: get_left
+
+; BEGIN: get_up
+get_up:
+
+ldw t2, NB_COLS(zero)
+ldw t5, NB_ROWS(zero)
+
+addi t1, t1, -1
+addi t4, t4, -4
+ldw t3, GSA(t4) ; load word at address GSA + t4
+
+bge t0, t5, end_game ; x coordinate is out of range
+blt t0, zero, end_game ; x coordinate is out of range
+bge t1, t2, end_game ; y coordinate is out of range
+blt t1, zero, end_game ; y coordinate is out of range
+bne t3, zero, end_game ; collide with itself
+
+addi t2, zero, 5
+beq t3, t2, is_food ; collision with food
+
+ldw t2, 0(v0) ; load in t2 the value of v0
+addi t5, zero, 1 ; store in t5 the value 1
+blt t2, t5, no_collision ; branch to no_collision if v0 is smaller than 1
+addi t5, zero, 3 ; store in t5 the value 3
+bge t2, t5, no_collision ; branch to no_collision if v0 is bigger or equal than 3
+
+ret
+; END: get_up
+
+; BEGIN: get_right
+get_right:
+
+ldw t2, NB_COLS(zero)
+ldw t5, NB_ROWS(zero)
+
+addi t0, t0, 1
+addi t4, t4, 32
+ldw t3, GSA(t4) ; load word at address GSA + t4
+
+bge t0, t5, end_game ; x coordinate is out of range
+blt t0, zero, end_game ; x coordinate is out of range
+bge t1, t2, end_game ; y coordinate is out of range
+blt t1, zero, end_game ; y coordinate is out of range
+bne t3, zero, end_game ; collide with itself
+
+addi t2, zero, 5
+beq t3, t2, is_food ; collision with food
+
+ldw t2, 0(v0) ; load in t2 the value of v0
+addi t5, zero, 1 ; store in t5 the value 1
+blt t2, t5, no_collision ; branch to no_collision if v0 is smaller than 1
+addi t5, zero, 3 ; store in t5 the value 3
+bge t2, t5, no_collision ; branch to no_collision if v0 is bigger or equal than 3
+
+ret
+; END: get_right
+
+; BEGIN: get_down
+get_down:
+
+ldw t2, NB_COLS(zero)
+ldw t5, NB_ROWS(zero)
+
+addi t1, t1, 1
+addi t4, t4, 4
+ldw t3, GSA(t4) ; load word at address GSA + t4
+
+bge t0, t5, end_game ; x coordinate is out of range
+blt t0, zero, end_game ; x coordinate is out of range
+bge t1, t2, end_game ; y coordinate is out of range
+blt t1, zero, end_game ; y coordinate is out of range
+bne t3, zero, end_game ; collide with itself
+
+addi t2, zero, 5
+beq t3, t2, is_food ; collision with food
+
+ldw t2, 0(v0) ; load in t2 the value of v0
+addi t5, zero, 1 ; store in t5 the value 1
+blt t2, t5, no_collision ; branch to no_collision if v0 is smaller than 1
+addi t5, zero, 3 ; store in t5 the value 3
+bge t2, t5, no_collision ; branch to no_collision if v0 is bigger or equal than 3
+
+ret
+; END: get_down
+
+; BEGIN: is_food
+is_food:
+
+addi v0, zero, 1
+
+
+ret
+; END: is_food
+
+; BEGIN: end_game
+end_game:
+
+addi v0, zero, 2
+
+
+ret
+; END: end_game
+
+; BEGIN: no_collision
+no_collision:
+
+addi v0, zero, 0
+
+
+ret
+; END: no_collision
+
 ; END: hit_test
 
 
@@ -348,70 +508,61 @@ move_snake:
 
 
 ; BEGIN: head_left
-
  head_left: 
 
- addi t0, t0, -1
- stw t0, HEAD_X(zero)
- addi t4, t4, -32
- stw t3, GSA(t4)
+ addi t0, t0, -1 ; substract 1 from x coordinates
+ stw t0, HEAD_X(zero) ; store in head_x new value
+ addi t4, t4, -32 ; get new corresponding position of head
+ stw t3, GSA(t4) ; store in new position of head the direction
 
  beq a0, zero, no_food ; branch to no_food if a1 is 0
 
  ret
-
  ; END: head_left
 
 
 ; BEGIN: head_up
-
  head_up: 
 
- addi t1, t1, -1
- stw t1, HEAD_Y(zero)
- addi t4, t4, -4
- stw t3, GSA(t4)
+ addi t1, t1, -1 ; substract 1 from y coordinates
+ stw t1, HEAD_Y(zero) ; store in head_y new value
+ addi t4, t4, -4 ; get new corresponding position of head
+ stw t3, GSA(t4) ; store in new position of head the direction
 
  beq a0, zero, no_food ; branch to no_food if a1 is 0
  
  ret
-
  ; END: head_up
  
 
 ; BEGIN: head_right
-
  head_right:   
 
- addi t0, t0, 1
- stw t0, HEAD_X(zero)
- addi t4, t4, 32
- stw t3, GSA(t4)
+ addi t0, t0, 1 ; add 1 to x coordinates
+ stw t0, HEAD_X(zero) ; store in head_x new value
+ addi t4, t4, 32 ; get new corresponding position of head
+ stw t3, GSA(t4) ; store in new position of head the direction
 
  beq a0, zero, no_food ; branch to no_food if a1 is 0
 
  ret
-
  ; END: head_right
 
 ; BEGIN: head_down
-
  head_down: 
 
- addi t1, t1, 1
- stw t1, HEAD_Y(zero)
- addi t4, t4, 4
- stw t3, GSA(t4)
+ addi t1, t1, 1 ; add 1 to y coordinates
+ stw t1, HEAD_Y(zero) ; store in head_y new value
+ addi t4, t4, 4 ; get new corresponding position of head
+ stw t3, GSA(t4) ; store in new position of head the direction
 
  beq a0, zero, no_food ; branch to no_food if a1 is 0
 
  ret
-
  ; END: head_down
 
 
 ; BEGIN: no_food
-
  no_food:
 
  ldw t0, TAIL_X(zero) ; load tail_x coordinate
@@ -435,47 +586,41 @@ move_snake:
 
 
 ; BEGIN: tail_left
-
  tail_left: 
 
- stw zero, GSA(t4)
- addi t0, t0, -1
- stw t0, TAIL_X(zero)
- addi t4, t4, -32
- stw t3, GSA(t4)
+ stw zero, GSA(t4) ; previous tail value in GSA is 0
+ addi t0, t0, -1 ; tail_x is substracted by 1
+ stw t0, TAIL_X(zero) ; store new value of tail_x in TAIL_X
+ addi t4, t4, -32 ; get new corresponding value of tail in GSA
+ stw t3, GSA(t4) ; store direction of new tail in GSA
 
  ret
-
  ; END: tail_left
 
 
 ; BEGIN: tail_up
-
  tail_up: 
 
- stw zero, GSA(t4)
- addi t1, t1, -1
- stw t1, TAIL_Y(zero)
- addi t4, t4, -4
- stw t3, GSA(t4)
+ stw zero, GSA(t4) ; previous tail value in GSA is 0
+ addi t1, t1, -1 ; tail_y is substracted by 1
+ stw t1, TAIL_Y(zero) ; store new value of tail_y in TAIL_Y
+ addi t4, t4, -4 ; get new corresponding value of tail in GSA
+ stw t3, GSA(t4) ; store direction of new tail in GSA
 
  ret
-
  ; END: tail_up
  
      
 ; BEGIN: tail_right
-
  tail_right:   
 
- stw zero, GSA(t4)
- addi t0, t0, 1
- stw t0, TAIL_X(zero)
- addi t4, t4, 32
- stw t3, GSA(t4)
+ stw zero, GSA(t4) ; previous tail value in GSA is 0
+ addi t0, t0, 1 ; we add 1 to tail_x
+ stw t0, TAIL_X(zero) ; store new value of tail_x in TAIL_X
+ addi t4, t4, 32 ; get new corresponding value of tail in GSA
+ stw t3, GSA(t4) ; store direction of new tail in GSA
 
  ret
-
  ; END: tail_right
 
 
@@ -483,11 +628,11 @@ move_snake:
 
  tail_down: 
 
- stw zero, GSA(t4)
- addi t1, t1, 1
- stw t1, TAIL_Y(zero)
- addi t4, t4, 4
- stw t3, GSA(t4)
+ stw zero, GSA(t4) ; previous tail value in GSA is 0
+ addi t1, t1, 1 ; we add 1 to tail_y
+ stw t1, TAIL_Y(zero) ; store new value of tail_y in TAIL_Y
+ addi t4, t4, 4 ; get new corresponding value of tail in GSA
+ stw t3, GSA(t4) ; store direction of new tail in GSA
 
  ret
 
