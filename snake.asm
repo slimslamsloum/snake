@@ -381,17 +381,18 @@ get_input:
     and t2, t0, t1 ; mask it
     beq t1, t2, left ; for left case 
 
-    ; none case 
-    stw zero, BUTTONS+4(zero); put buttons at zero
-    
-    ret
+    ; BEGIN: none
+    none:
+        stw zero, BUTTONS+4(zero); put buttons at zero
+        ret
+    ; END: none
     
     
 
     ; BEGIN: checkPoint
     checkPoint:
         stw zero, BUTTONS+4(zero); put buttons at zero
-        addi, v0, BUTTON_CHECKPOINT ; init v0 to the good button
+        addi v0, zero, BUTTON_CHECKPOINT ; init v0 to the good button
         ret
     ; END: checkPoint
 
