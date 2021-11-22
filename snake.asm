@@ -381,6 +381,9 @@ get_input:
     and t2, t0, t1 ; mask it
     beq t1, t2, left ; for left case 
 
+    ;handle the none case
+    br none
+
     ; BEGIN: none
     none:
         stw zero, BUTTONS+4(zero); put buttons at zero
