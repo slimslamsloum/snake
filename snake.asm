@@ -355,11 +355,11 @@ get_input:
     add v0, zero,zero ;init vo to zero 
     ldw t0, BUTTONS+4(zero) ; load edge capture button
 
-    ;none case
-    andi t0, t0, 63 ; mask the buttons to get the fourth firts bits
-    addi t1, zero, 32; init a mask
+    ;checkpoint case
+    andi t0, t0, 31 ; mask the buttons to get the fourth firts bits
+    addi t1, zero, 16; init a mask
     and t2, t0, t1 ; mask it
-    beq t1, t2, none; test for checkpoint case 
+    beq t1, t2, checkPoint; test for checkpoint case 
 
     ;right case
     srai t1, t1, 1 ; shift again
@@ -381,16 +381,21 @@ get_input:
     and t2, t0, t1 ; mask it
     beq t1, t2, left ; for left case 
 
-    ;none case 
-    srai t1, t1, 1 ; shift again 
-    and t2, t0, t1 ; mask it
-    beq t1, t2, none ; for none case 
+    ; none case 
+    stw zero, BUTTONS+4(zero); put buttons at zero
+    
+    ret
+    
+    
 
-    ; handle none case
-    none: 
+    ; BEGIN: checkPoint
+    checkPoint:
         stw zero, BUTTONS+4(zero); put buttons at zero
+        addi, v0, BUTTON_CHECKPOINT ; init v0 to the good button
         ret
-    ; handle the left case 
+    ; END: checkPoint
+
+    ; BEGIN: left
     left: 
         ldw t0, HEAD_X(zero) ; load head x position
         ldw t1, HEAD_Y(zero) ; load head y position 
@@ -403,11 +408,13 @@ get_input:
         ldw t4, GSA(t3); load the current value that is in the gsa
         beq t4, t5, none ; if it indicate an opposite direction ignore the action
         stw t2, GSA(t3) ; change the value of the head direction in the gsa
-        addi v0, zero, DIR_LEFT ; init v0 to the good direction's value 
+        addi v0, zero, BUTTON_LEFT ; init v0 to the good direction's value 
         stw  zero, BUTTONS+4(zero) ; put edge button to zero again 
 
         ret
-    ; handle the up case 
+    ; END: left
+
+    ; BEGIN: up
     up:
         ldw t0, HEAD_X(zero) ; load head x position
         ldw t1, HEAD_Y(zero) ; load head y position 
@@ -420,11 +427,13 @@ get_input:
         ldw t4, GSA(t3); load the current value that is in the gsa
         beq t4, t5, none ; if it indicate an opposite direction ignore the action
         stw t2, GSA(t3); change gsa
-        addi v0, zero, 2 ; init v0 to the good direction's value
+        addi v0, zero, BUTTON_UP ; init v0 to the good direction's value
         stw  zero, BUTTONS+4(zero) ; put edge button to zero again 
 
         ret
-    ;handle the down case 
+    ; END: up
+
+    ; BEGIN: down
     down:
         ldw t0, HEAD_X(zero) ; load head x position
         ldw t1, HEAD_Y(zero) ; load head y position 
@@ -437,11 +446,13 @@ get_input:
         ldw t4, GSA(t3); load the current value that is in the gsa
         beq t4, t5, none ; if it indicate an opposite direction ignore the action
         stw t2, GSA(t3); change gsa
-        addi v0, zero, DIR_DOWN ; init v0 to the good direction's value
+        addi v0, zero, BUTTON_DOWN ; init v0 to the good direction's value
         stw  zero, BUTTONS+4(zero) ; put edge button to zero again 
 
         ret
-    ;handle the right case 
+    ; END: down
+    
+    ; BEGIN: right
     right:
         ldw t0, HEAD_X(zero) ; load head x position
         ldw t1, HEAD_Y(zero) ; load head y position 
@@ -454,10 +465,11 @@ get_input:
         ldw t4, GSA(t3); load the current value that is in the gsa
         beq t4, t5, none ; if it indicate an opposite direction ignore the action
         stw t2, GSA(t3); change gsa
-        addi v0, zero, DIR_RIGHT ; init v0 to the good direction's value
+        addi v0, zero, BUTTON_RIGHT; init v0 to the good direction's value
         stw  zero, BUTTONS+4(zero) ; put edge button to zero again 
 
         ret
+    ; END: right
    
 ; END: get_input
 
