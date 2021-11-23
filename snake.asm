@@ -200,6 +200,26 @@ save_checkpoint:
 ; BEGIN: restore_checkpoint
 restore_checkpoint:
 
+ldw t0, 0(CP_VALID)
+beq t0, 1, valid
+bne t0, 0, not_valid 
+
+valid: 
+
+loop_gsa:
+
+addi t0, zero, 1
+stw t0, 0(v0)
+
+ret
+
+not_valid: 
+
+addi t0, zero, 1
+stw t0, 0(v0)
+
+ret
+
 ; END: restore_checkpoint
 
 ; BEGIN: copy_memory
