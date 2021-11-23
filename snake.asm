@@ -57,7 +57,6 @@ main:
     ; TODO: Finish this procedure.
 ; TODO: Finish this procedure.
  call clear_leds
-    
     addi a0, zero, 0
     addi t0, zero, 4
     stw t0, GSA(zero)
@@ -72,9 +71,12 @@ main:
         call hit_test
 
         add a0, zero, v0
+
         beq a0, zero, continue
+
         addi t1, zero, 2
-        beq a0, t1, main 
+        beq a0, t1, end 
+
 		addi t0, zero, 1
         beq a0, t0, eat
        
@@ -92,11 +94,17 @@ main:
 
     ;BEGIN: eat    
     eat: 
-	call create_food 
+	
     call move_snake 
     call draw_array
     br loop
     ;END: eat 
+
+	; BEGIN: end 	
+	end: 
+	call clear_leds
+	ret
+	; END: end 
     
 
     ret
@@ -217,10 +225,10 @@ hit_test:
         addi t4, t4, -32
         ldw t3, GSA(t4) ; load word at address GSA + t4
 
-        bge t0, t5, end_game ; x coordinate is out of range
-        blt t0, zero, end_game ; x coordinate is out of range
-        bge t1, t2, end_game ; y coordinate is out of range
+        bge t1, t5, end_game ; y coordinate is out of range
         blt t1, zero, end_game ; y coordinate is out of range
+        bge t0, t2, end_game ; x coordinate is out of range
+        blt t0, zero, end_game ; x coordinate is out of range
 
         addi t2, zero, 5
         beq t3, t2, is_food ; collision with food
@@ -246,10 +254,10 @@ hit_test:
         addi t4, t4, -4
         ldw t3, GSA(t4) ; load word at address GSA + t4
 
-        bge t0, t5, end_game ; x coordinate is out of range
-        blt t0, zero, end_game ; x coordinate is out of range
-        bge t1, t2, end_game ; y coordinate is out of range
+        bge t1, t5, end_game ; y coordinate is out of range
         blt t1, zero, end_game ; y coordinate is out of range
+        bge t0, t2, end_game ; x coordinate is out of range
+        blt t0, zero, end_game ; x coordinate is out of range
 
         addi t2, zero, 5
         beq t3, t2, is_food ; collision with food
@@ -275,10 +283,10 @@ hit_test:
         addi t4, t4, 32
         ldw t3, GSA(t4) ; load word at address GSA + t4
 
-        bge t0, t5, end_game ; x coordinate is out of range
-        blt t0, zero, end_game ; x coordinate is out of range
-        bge t1, t2, end_game ; y coordinate is out of range
+        bge t1, t5, end_game ; y coordinate is out of range
         blt t1, zero, end_game ; y coordinate is out of range
+        bge t0, t2, end_game ; x coordinate is out of range
+        blt t0, zero, end_game ; x coordinate is out of range
 
         addi t2, zero, 5
         beq t3, t2, is_food ; collision with food
@@ -304,10 +312,10 @@ hit_test:
         addi t4, t4, 4
         ldw t3, GSA(t4) ; load word at address GSA + t4
 
-        bge t0, t5, end_game ; x coordinate is out of range
-        blt t0, zero, end_game ; x coordinate is out of range
-        bge t1, t2, end_game ; y coordinate is out of range
+        bge t1, t5, end_game ; y coordinate is out of range
         blt t1, zero, end_game ; y coordinate is out of range
+        bge t0, t2, end_game ; x coordinate is out of range
+        blt t0, zero, end_game ; x coordinate is out of range
 
         addi t2, zero, 5
         beq t3, t2, is_food ; collision with food
@@ -610,6 +618,7 @@ move_snake:
         ldw t1, TAIL_Y(zero) ; load tail_y coordinate
         add t4, t4, t1 ; add tail_y and 8*tail_x
         slli t4, t4, 2 ; multiply result by 4 
+        ldw t3, GSA(t4) ; get current 
 
         addi t2, zero, BUTTON_LEFT
         beq t3, t2, tail_left ; tail left case
@@ -631,8 +640,7 @@ move_snake:
         stw zero, GSA(t4) ; previous tail value in GSA is 0
         addi t0, t0, -1 ; tail_x is substracted by 1
         stw t0, TAIL_X(zero) ; store new value of tail_x in TAIL_X
-        addi t4, t4, -32 ; get new corresponding value of tail in GSA
-        stw t3, GSA(t4) ; store direction of new tail in GSA
+       
 
         ret
     ; END: tail_left
@@ -644,9 +652,7 @@ move_snake:
         stw zero, GSA(t4) ; previous tail value in GSA is 0
         addi t1, t1, -1 ; tail_y is substracted by 1
         stw t1, TAIL_Y(zero) ; store new value of tail_y in TAIL_Y
-        addi t4, t4, -4 ; get new corresponding value of tail in GSA
-        stw t3, GSA(t4) ; store direction of new tail in GSA
-
+      
         ret
     ; END: tail_up
     
@@ -657,9 +663,7 @@ move_snake:
         stw zero, GSA(t4) ; previous tail value in GSA is 0
         addi t0, t0, 1 ; we add 1 to tail_x
         stw t0, TAIL_X(zero) ; store new value of tail_x in TAIL_X
-        addi t4, t4, 32 ; get new corresponding value of tail in GSA
-        stw t3, GSA(t4) ; store direction of new tail in GSA
-
+ 
         ret
     ; END: tail_right
 
@@ -671,8 +675,8 @@ move_snake:
         stw zero, GSA(t4) ; previous tail value in GSA is 0
         addi t1, t1, 1 ; we add 1 to tail_y
         stw t1, TAIL_Y(zero) ; store new value of tail_y in TAIL_Y
-        addi t4, t4, 4 ; get new corresponding value of tail in GSA
-        stw t3, GSA(t4) ; store direction of new tail in GSA
+       ; addi t4, t4, 4 ; get new corresponding value of tail in GSA
+       ; stw t3, GSA(t4) ; store direction of new tail in GSA
 
         ret
 
