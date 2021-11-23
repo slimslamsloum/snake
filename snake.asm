@@ -210,8 +210,8 @@ hit_test:
     ; BEGIN: get_left
     get_left:
 
-        ldw t2, NB_COLS(zero)  
-        ldw t5, NB_ROWS(zero) 
+        addi t2, zero, NB_COLS
+        addi t5, zero, NB_ROWS
 
         addi t0, t0, -1
         addi t4, t4, -32
@@ -239,8 +239,8 @@ hit_test:
     ; BEGIN: get_up
     get_up:
 
-        ldw t2, NB_COLS(zero)
-        ldw t5, NB_ROWS(zero)
+        addi t2, zero, NB_COLS
+        addi t5, zero, NB_ROWS
 
         addi t1, t1, -1
         addi t4, t4, -4
@@ -268,8 +268,8 @@ hit_test:
     ; BEGIN: get_right
     get_right:
 
-        ldw t2, NB_COLS(zero)
-        ldw t5, NB_ROWS(zero)
+        addi t2, zero, NB_COLS
+        addi t5, zero, NB_ROWS
 
         addi t0, t0, 1
         addi t4, t4, 32
@@ -297,8 +297,8 @@ hit_test:
     ; BEGIN: get_down
     get_down:
 
-        ldw t2, NB_COLS(zero)
-        ldw t5, NB_ROWS(zero)
+        addi t2, zero, NB_COLS
+        addi t5, zero, NB_ROWS
 
         addi t1, t1, 1
         addi t4, t4, 4
