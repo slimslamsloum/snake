@@ -200,14 +200,17 @@ save_checkpoint:
 ; BEGIN: restore_checkpoint
 restore_checkpoint:
 
-    ldw t0, 0(CP_VALID)
-    beq t0, 1, valid
-    bne t0, 0, not_valid 
+    ldw t0, 0(CP_VALID) ; load word at address CP_VALID
+    beq t0, 1, valid ; branch if is valid
+    bne t0, 0, not_valid ; branch if isn't valid
 
+    ; BEGIN: valid
     valid: 
         addi s0, zero, NB_CELLS ; init a register to the number of word in the GSA 
-        call loop_gsa
+        call loop_gsa ; loop through entire GSA
 
+
+        ; BEGIN: loop_gsa
         loop_gsa:
             slli t0, s0, 2 ; multiply by 4 to get the good word in gsa
             addi a0, zero, CP_GSA(t0) ; load the good address CP_GSA
@@ -216,24 +219,28 @@ restore_checkpoint:
             beq s0, zero, break ; testing if reached the end of the GSA
             addi s0, s0, -1 ; if not then counter -1
             br loop_gsa ; branch to the loop again 
+        ; END: loop_gsa
 
-        ; BEGIN: return_process
+        ; BEGIN: break
         break:
             ret
-        ; END: return_process
+        ; END: break
 
 
-    addi t0, zero, 1
-    stw t0, 0(v0)
+        addi t0, zero, 1
+        stw t0, 0(v0) ; return in v0 1 if is valid
 
-    ret
+        ret
+    ; END: valid
 
+    ; BEGIN: not_valid
     not_valid: 
 
         addi t0, zero, 1
-        stw t0, 0(v0)
+        stw t0, 0(v0) ; return in v0 0 if isn't valid
 
         ret
+    ; END: not_valid
 
 ; END: restore_checkpoint
 
