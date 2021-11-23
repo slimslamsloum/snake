@@ -58,23 +58,24 @@ main:
 ; TODO: Finish this procedure.
  call clear_leds
     
-     addi a0, zero, 0
+    addi a0, zero, 0
     addi t0, zero, 4
     stw t0, GSA(zero)
     ; CSTE
-    addi t0, zero, 1
-    addi t1, zero, 2
-    
+    call create_food
 
     ;BEGIN: loop 
     loop:
-
+		
         call clear_leds
         call get_input
         call hit_test
+
         add a0, zero, v0
         beq a0, zero, continue
+        addi t1, zero, 2
         beq a0, t1, main 
+		addi t0, zero, 1
         beq a0, t0, eat
        
         beq zero, zero, loop
@@ -91,8 +92,8 @@ main:
 
     ;BEGIN: eat    
     eat: 
+	call create_food 
     call move_snake 
-    call create_food
     call draw_array
     br loop
     ;END: eat 
