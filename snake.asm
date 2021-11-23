@@ -175,7 +175,7 @@ save_checkpoint:
         loop_word:
             slli t0, s0, 2 ; multiply by 4 to get the good word in gsa
             addi a0, zero, GSA(t0)          ; load the good address GSA
-            addi a1, zero, CP_GSA(t0)       ; load the good from CP_GSA
+            addi a1, zero, CP_GSA(t0)       ; load the good address from CP_GSA
             call copy_memory                ; call the copy memory process
             beq s0, zero, return_process    ; testing if reached the end of the GSA
             addi s0, s0, -1                 ; if not then counter -1
@@ -200,25 +200,40 @@ save_checkpoint:
 ; BEGIN: restore_checkpoint
 restore_checkpoint:
 
-ldw t0, 0(CP_VALID)
-beq t0, 1, valid
-bne t0, 0, not_valid 
+    ldw t0, 0(CP_VALID)
+    beq t0, 1, valid
+    bne t0, 0, not_valid 
 
-valid: 
+    valid: 
+        addi s0, zero, NB_CELLS ; init a register to the number of word in the GSA 
+        call loop_gsa
 
-loop_gsa:
+        loop_gsa:
+            slli t0, s0, 2 ; multiply by 4 to get the good word in gsa
+            addi a0, zero, CP_GSA(t0) ; load the good address CP_GSA
+            addi a1, zero, GSA(t0) ; load the good address from GSA
+            call copy_memory ; call the copy memory process
+            beq s0, zero, break ; testing if reached the end of the GSA
+            addi s0, s0, -1 ; if not then counter -1
+            br loop_gsa ; branch to the loop again 
 
-addi t0, zero, 1
-stw t0, 0(v0)
+        ; BEGIN: return_process
+        break:
+            ret
+        ; END: return_process
 
-ret
 
-not_valid: 
+    addi t0, zero, 1
+    stw t0, 0(v0)
 
-addi t0, zero, 1
-stw t0, 0(v0)
+    ret
 
-ret
+    not_valid: 
+
+        addi t0, zero, 1
+        stw t0, 0(v0)
+
+        ret
 
 ; END: restore_checkpoint
 
