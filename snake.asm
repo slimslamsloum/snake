@@ -220,10 +220,11 @@ hit_test:
         blt t0, zero, end_game ; x coordinate is out of range
         bge t1, t2, end_game ; y coordinate is out of range
         blt t1, zero, end_game ; y coordinate is out of range
-        bne t3, zero, end_game ; collide with itself
 
         addi t2, zero, 5
         beq t3, t2, is_food ; collision with food
+
+        bne t3, zero, end_game ; collide with itself
 
         ldw t2, 0(v0) ; load in t2 the value of v0
         addi t5, zero, 1 ; store in t5 the value 1
@@ -248,10 +249,11 @@ hit_test:
         blt t0, zero, end_game ; x coordinate is out of range
         bge t1, t2, end_game ; y coordinate is out of range
         blt t1, zero, end_game ; y coordinate is out of range
-        bne t3, zero, end_game ; collide with itself
 
         addi t2, zero, 5
         beq t3, t2, is_food ; collision with food
+
+        bne t3, zero, end_game ; collide with itself
 
         ldw t2, 0(v0) ; load in t2 the value of v0
         addi t5, zero, 1 ; store in t5 the value 1
@@ -276,10 +278,11 @@ hit_test:
         blt t0, zero, end_game ; x coordinate is out of range
         bge t1, t2, end_game ; y coordinate is out of range
         blt t1, zero, end_game ; y coordinate is out of range
-        bne t3, zero, end_game ; collide with itself
 
         addi t2, zero, 5
         beq t3, t2, is_food ; collision with food
+
+        bne t3, zero, end_game ; collide with itself
 
         ldw t2, 0(v0) ; load in t2 the value of v0
         addi t5, zero, 1 ; store in t5 the value 1
@@ -304,10 +307,11 @@ hit_test:
         blt t0, zero, end_game ; x coordinate is out of range
         bge t1, t2, end_game ; y coordinate is out of range
         blt t1, zero, end_game ; y coordinate is out of range
-        bne t3, zero, end_game ; collide with itself
 
         addi t2, zero, 5
         beq t3, t2, is_food ; collision with food
+
+        bne t3, zero, end_game ; collide with itself
 
         ldw t2, 0(v0) ; load in t2 the value of v0
         addi t5, zero, 1 ; store in t5 the value 1
