@@ -519,159 +519,159 @@ draw_array:
 
 move_snake:
 
-; t0 is head_x or tail_x
-; t1 is head_y or tail_y
-; t3 is direction
-; t4 is head/tail gsa
+    ; t0 is head_x or tail_x
+    ; t1 is head_y or tail_y
+    ; t3 is direction
+    ; t4 is head/tail gsa
 
 
- ldw t0, HEAD_X(zero) ; load head_x coordinate
- slli t4, t0, 3 ; multiply head_x by 8
- ldw t1, HEAD_Y(zero) ; load head_y coordinate
- add t4, t4, t1 ; add head_y and 8*head_x
- slli t4, t4, 2 ; multiply result by 4 
- ldw t3, GSA(t4) ; load word at address GSA + t4
+    ldw t0, HEAD_X(zero) ; load head_x coordinate
+    slli t4, t0, 3 ; multiply head_x by 8
+    ldw t1, HEAD_Y(zero) ; load head_y coordinate
+    add t4, t4, t1 ; add head_y and 8*head_x
+    slli t4, t4, 2 ; multiply result by 4 
+    ldw t3, GSA(t4) ; load word at address GSA + t4
 
- addi t2, zero, BUTTON_LEFT
- beq t3, t2, head_left ; head left case
- addi t2, zero, BUTTON_UP
- beq t3, t2, head_up ; head up case
- addi t2, zero, BUTTON_RIGHT
- beq t3, t2, head_right ; head right case
- addi t2, zero, BUTTON_DOWN
- beq t3, t2, head_down ; head down case
-
-
-; BEGIN: head_left
- head_left: 
-
- addi t0, t0, -1 ; substract 1 from x coordinates
- stw t0, HEAD_X(zero) ; store in head_x new value
- addi t4, t4, -32 ; get new corresponding position of head
- stw t3, GSA(t4) ; store in new position of head the direction
-
- beq a0, zero, no_food ; branch to no_food if a1 is 0
-
- ret
- ; END: head_left
+    addi t2, zero, BUTTON_LEFT
+    beq t3, t2, head_left ; head left case
+    addi t2, zero, BUTTON_UP
+    beq t3, t2, head_up ; head up case
+    addi t2, zero, BUTTON_RIGHT
+    beq t3, t2, head_right ; head right case
+    addi t2, zero, BUTTON_DOWN
+    beq t3, t2, head_down ; head down case
 
 
-; BEGIN: head_up
- head_up: 
+    ; BEGIN: head_left
+    head_left: 
 
- addi t1, t1, -1 ; substract 1 from y coordinates
- stw t1, HEAD_Y(zero) ; store in head_y new value
- addi t4, t4, -4 ; get new corresponding position of head
- stw t3, GSA(t4) ; store in new position of head the direction
+        addi t0, t0, -1 ; substract 1 from x coordinates
+        stw t0, HEAD_X(zero) ; store in head_x new value
+        addi t4, t4, -32 ; get new corresponding position of head
+        stw t3, GSA(t4) ; store in new position of head the direction
 
- beq a0, zero, no_food ; branch to no_food if a1 is 0
- 
- ret
- ; END: head_up
- 
+        beq a0, zero, no_food ; branch to no_food if a1 is 0
 
-; BEGIN: head_right
- head_right:   
-
- addi t0, t0, 1 ; add 1 to x coordinates
- stw t0, HEAD_X(zero) ; store in head_x new value
- addi t4, t4, 32 ; get new corresponding position of head
- stw t3, GSA(t4) ; store in new position of head the direction
-
- beq a0, zero, no_food ; branch to no_food if a1 is 0
-
- ret
- ; END: head_right
-
-; BEGIN: head_down
- head_down: 
-
- addi t1, t1, 1 ; add 1 to y coordinates
- stw t1, HEAD_Y(zero) ; store in head_y new value
- addi t4, t4, 4 ; get new corresponding position of head
- stw t3, GSA(t4) ; store in new position of head the direction
-
- beq a0, zero, no_food ; branch to no_food if a1 is 0
-
- ret
- ; END: head_down
+        ret
+    ; END: head_left
 
 
-; BEGIN: no_food
- no_food:
+    ; BEGIN: head_up
+    head_up: 
 
- ldw t0, TAIL_X(zero) ; load tail_x coordinate
- slli t4, t0, 3 ; multiply tail_x by 8
- ldw t1, TAIL_Y(zero) ; load tail_y coordinate
- add t4, t4, t1 ; add tail_y and 8*tail_x
- slli t4, t4, 2 ; multiply result by 4 
+        addi t1, t1, -1 ; substract 1 from y coordinates
+        stw t1, HEAD_Y(zero) ; store in head_y new value
+        addi t4, t4, -4 ; get new corresponding position of head
+        stw t3, GSA(t4) ; store in new position of head the direction
 
- addi t2, zero, BUTTON_LEFT
- beq t3, t2, tail_left ; tail left case
- addi t2, zero, BUTTON_UP
- beq t3, t2, tail_up ; tail up case
- addi t2, zero, BUTTON_RIGHT
- beq t3, t2, tail_right ; tail right case
- addi t2, zero, BUTTON_DOWN
- beq t3, t2, tail_down ; tail down case
+        beq a0, zero, no_food ; branch to no_food if a1 is 0
+        
+        ret
+    ; END: head_up
+    
 
- ret
+    ; BEGIN: head_right
+    head_right:   
 
- ; END: no_food
+        addi t0, t0, 1 ; add 1 to x coordinates
+        stw t0, HEAD_X(zero) ; store in head_x new value
+        addi t4, t4, 32 ; get new corresponding position of head
+        stw t3, GSA(t4) ; store in new position of head the direction
 
+        beq a0, zero, no_food ; branch to no_food if a1 is 0
 
-; BEGIN: tail_left
- tail_left: 
+        ret
+    ; END: head_right
 
- stw zero, GSA(t4) ; previous tail value in GSA is 0
- addi t0, t0, -1 ; tail_x is substracted by 1
- stw t0, TAIL_X(zero) ; store new value of tail_x in TAIL_X
- addi t4, t4, -32 ; get new corresponding value of tail in GSA
- stw t3, GSA(t4) ; store direction of new tail in GSA
+    ; BEGIN: head_down
+    head_down: 
 
- ret
- ; END: tail_left
+        addi t1, t1, 1 ; add 1 to y coordinates
+        stw t1, HEAD_Y(zero) ; store in head_y new value
+        addi t4, t4, 4 ; get new corresponding position of head
+        stw t3, GSA(t4) ; store in new position of head the direction
 
+        beq a0, zero, no_food ; branch to no_food if a1 is 0
 
-; BEGIN: tail_up
- tail_up: 
-
- stw zero, GSA(t4) ; previous tail value in GSA is 0
- addi t1, t1, -1 ; tail_y is substracted by 1
- stw t1, TAIL_Y(zero) ; store new value of tail_y in TAIL_Y
- addi t4, t4, -4 ; get new corresponding value of tail in GSA
- stw t3, GSA(t4) ; store direction of new tail in GSA
-
- ret
- ; END: tail_up
- 
-     
-; BEGIN: tail_right
- tail_right:   
-
- stw zero, GSA(t4) ; previous tail value in GSA is 0
- addi t0, t0, 1 ; we add 1 to tail_x
- stw t0, TAIL_X(zero) ; store new value of tail_x in TAIL_X
- addi t4, t4, 32 ; get new corresponding value of tail in GSA
- stw t3, GSA(t4) ; store direction of new tail in GSA
-
- ret
- ; END: tail_right
+        ret
+    ; END: head_down
 
 
-; BEGIN: tail_down
+    ; BEGIN: no_food
+    no_food:
 
- tail_down: 
+        ldw t0, TAIL_X(zero) ; load tail_x coordinate
+        slli t4, t0, 3 ; multiply tail_x by 8
+        ldw t1, TAIL_Y(zero) ; load tail_y coordinate
+        add t4, t4, t1 ; add tail_y and 8*tail_x
+        slli t4, t4, 2 ; multiply result by 4 
 
- stw zero, GSA(t4) ; previous tail value in GSA is 0
- addi t1, t1, 1 ; we add 1 to tail_y
- stw t1, TAIL_Y(zero) ; store new value of tail_y in TAIL_Y
- addi t4, t4, 4 ; get new corresponding value of tail in GSA
- stw t3, GSA(t4) ; store direction of new tail in GSA
+        addi t2, zero, BUTTON_LEFT
+        beq t3, t2, tail_left ; tail left case
+        addi t2, zero, BUTTON_UP
+        beq t3, t2, tail_up ; tail up case
+        addi t2, zero, BUTTON_RIGHT
+        beq t3, t2, tail_right ; tail right case
+        addi t2, zero, BUTTON_DOWN
+        beq t3, t2, tail_down ; tail down case
 
- ret
+        ret
 
-; END: tail_down
+    ; END: no_food
+
+
+    ; BEGIN: tail_left
+    tail_left: 
+
+        stw zero, GSA(t4) ; previous tail value in GSA is 0
+        addi t0, t0, -1 ; tail_x is substracted by 1
+        stw t0, TAIL_X(zero) ; store new value of tail_x in TAIL_X
+        addi t4, t4, -32 ; get new corresponding value of tail in GSA
+        stw t3, GSA(t4) ; store direction of new tail in GSA
+
+        ret
+    ; END: tail_left
+
+
+    ; BEGIN: tail_up
+    tail_up: 
+
+        stw zero, GSA(t4) ; previous tail value in GSA is 0
+        addi t1, t1, -1 ; tail_y is substracted by 1
+        stw t1, TAIL_Y(zero) ; store new value of tail_y in TAIL_Y
+        addi t4, t4, -4 ; get new corresponding value of tail in GSA
+        stw t3, GSA(t4) ; store direction of new tail in GSA
+
+        ret
+    ; END: tail_up
+    
+        
+    ; BEGIN: tail_right
+    tail_right:   
+
+        stw zero, GSA(t4) ; previous tail value in GSA is 0
+        addi t0, t0, 1 ; we add 1 to tail_x
+        stw t0, TAIL_X(zero) ; store new value of tail_x in TAIL_X
+        addi t4, t4, 32 ; get new corresponding value of tail in GSA
+        stw t3, GSA(t4) ; store direction of new tail in GSA
+
+        ret
+    ; END: tail_right
+
+
+    ; BEGIN: tail_down
+
+    tail_down: 
+
+        stw zero, GSA(t4) ; previous tail value in GSA is 0
+        addi t1, t1, 1 ; we add 1 to tail_y
+        stw t1, TAIL_Y(zero) ; store new value of tail_y in TAIL_Y
+        addi t4, t4, 4 ; get new corresponding value of tail in GSA
+        stw t3, GSA(t4) ; store direction of new tail in GSA
+
+        ret
+
+    ; END: tail_down
 
 
 ; END: move_snake
