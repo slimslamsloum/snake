@@ -185,167 +185,161 @@ create_food:
 ; BEGIN: hit_test
 hit_test:
 
-; t0 and t1 will be coordinates of next head position
-; t4 will be address in gsa of next head position
-; t2 is columns
-; t5 is rows
+    ; t0 and t1 will be coordinates of next head position
+    ; t4 will be address in gsa of next head position
+    ; t2 is columns
+    ; t5 is rows
 
-ldw t0, HEAD_X(zero) ; load head_x coordinate
-slli t4, t0, 3 ; multiply head_x by 8
-ldw t1, HEAD_Y(zero) ; load head_y coordinate
-add t4, t4, t1 ; add head_y and 8*head_x
-slli t4, t4, 2 ; multiply result by 4 
-ldw t3, GSA(t4) ; load word at address GSA + t4
+    ldw t0, HEAD_X(zero) ; load head_x coordinate
+    slli t4, t0, 3 ; multiply head_x by 8
+    ldw t1, HEAD_Y(zero) ; load head_y coordinate
+    add t4, t4, t1 ; add head_y and 8*head_x
+    slli t4, t4, 2 ; multiply result by 4 
+    ldw t3, GSA(t4) ; load word at address GSA + t4
 
-addi t2, zero, BUTTON_LEFT
-beq t3, t2, get_left ; head left case
-addi t2, zero, BUTTON_UP
-beq t3, t2, get_up ; head up case
-addi t2, zero, BUTTON_RIGHT
-beq t3, t2, get_right ; head right case
-addi t2, zero, BUTTON_DOWN
-beq t3, t2, get_down ; head down case
+    addi t2, zero, BUTTON_LEFT
+    beq t3, t2, get_left ; head left case
+    addi t2, zero, BUTTON_UP
+    beq t3, t2, get_up ; head up case
+    addi t2, zero, BUTTON_RIGHT
+    beq t3, t2, get_right ; head right case
+    addi t2, zero, BUTTON_DOWN
+    beq t3, t2, get_down ; head down case
 
-; BEGIN: get_left
-get_left:
+    ; BEGIN: get_left
+    get_left:
 
-ldw t2, NB_COLS(zero)  
-ldw t5, NB_ROWS(zero) 
+        ldw t2, NB_COLS(zero)  
+        ldw t5, NB_ROWS(zero) 
 
-addi t0, t0, -1
-addi t4, t4, -32
-ldw t3, GSA(t4) ; load word at address GSA + t4
+        addi t0, t0, -1
+        addi t4, t4, -32
+        ldw t3, GSA(t4) ; load word at address GSA + t4
 
-bge t0, t5, end_game ; x coordinate is out of range
-blt t0, zero, end_game ; x coordinate is out of range
-bge t1, t2, end_game ; y coordinate is out of range
-blt t1, zero, end_game ; y coordinate is out of range
-bne t3, zero, end_game ; collide with itself
+        bge t0, t5, end_game ; x coordinate is out of range
+        blt t0, zero, end_game ; x coordinate is out of range
+        bge t1, t2, end_game ; y coordinate is out of range
+        blt t1, zero, end_game ; y coordinate is out of range
+        bne t3, zero, end_game ; collide with itself
 
-addi t2, zero, 5
-beq t3, t2, is_food ; collision with food
+        addi t2, zero, 5
+        beq t3, t2, is_food ; collision with food
 
-ldw t2, 0(v0) ; load in t2 the value of v0
-addi t5, zero, 1 ; store in t5 the value 1
-blt t2, t5, no_collision ; branch to no_collision if v0 is smaller than 1
-addi t5, zero, 3 ; store in t5 the value 3
-bge t2, t5, no_collision ; branch to no_collision if v0 is bigger or equal than 3
+        ldw t2, 0(v0) ; load in t2 the value of v0
+        addi t5, zero, 1 ; store in t5 the value 1
+        blt t2, t5, no_collision ; branch to no_collision if v0 is smaller than 1
+        addi t5, zero, 3 ; store in t5 the value 3
+        bge t2, t5, no_collision ; branch to no_collision if v0 is bigger or equal than 3
 
-ret
-; END: get_left
+        ret
+    ; END: get_left
 
-; BEGIN: get_up
-get_up:
+    ; BEGIN: get_up
+    get_up:
 
-ldw t2, NB_COLS(zero)
-ldw t5, NB_ROWS(zero)
+        ldw t2, NB_COLS(zero)
+        ldw t5, NB_ROWS(zero)
 
-addi t1, t1, -1
-addi t4, t4, -4
-ldw t3, GSA(t4) ; load word at address GSA + t4
+        addi t1, t1, -1
+        addi t4, t4, -4
+        ldw t3, GSA(t4) ; load word at address GSA + t4
 
-bge t0, t5, end_game ; x coordinate is out of range
-blt t0, zero, end_game ; x coordinate is out of range
-bge t1, t2, end_game ; y coordinate is out of range
-blt t1, zero, end_game ; y coordinate is out of range
-bne t3, zero, end_game ; collide with itself
+        bge t0, t5, end_game ; x coordinate is out of range
+        blt t0, zero, end_game ; x coordinate is out of range
+        bge t1, t2, end_game ; y coordinate is out of range
+        blt t1, zero, end_game ; y coordinate is out of range
+        bne t3, zero, end_game ; collide with itself
 
-addi t2, zero, 5
-beq t3, t2, is_food ; collision with food
+        addi t2, zero, 5
+        beq t3, t2, is_food ; collision with food
 
-ldw t2, 0(v0) ; load in t2 the value of v0
-addi t5, zero, 1 ; store in t5 the value 1
-blt t2, t5, no_collision ; branch to no_collision if v0 is smaller than 1
-addi t5, zero, 3 ; store in t5 the value 3
-bge t2, t5, no_collision ; branch to no_collision if v0 is bigger or equal than 3
+        ldw t2, 0(v0) ; load in t2 the value of v0
+        addi t5, zero, 1 ; store in t5 the value 1
+        blt t2, t5, no_collision ; branch to no_collision if v0 is smaller than 1
+        addi t5, zero, 3 ; store in t5 the value 3
+        bge t2, t5, no_collision ; branch to no_collision if v0 is bigger or equal than 3
 
-ret
-; END: get_up
+        ret
+    ; END: get_up
 
-; BEGIN: get_right
-get_right:
+    ; BEGIN: get_right
+    get_right:
 
-ldw t2, NB_COLS(zero)
-ldw t5, NB_ROWS(zero)
+        ldw t2, NB_COLS(zero)
+        ldw t5, NB_ROWS(zero)
 
-addi t0, t0, 1
-addi t4, t4, 32
-ldw t3, GSA(t4) ; load word at address GSA + t4
+        addi t0, t0, 1
+        addi t4, t4, 32
+        ldw t3, GSA(t4) ; load word at address GSA + t4
 
-bge t0, t5, end_game ; x coordinate is out of range
-blt t0, zero, end_game ; x coordinate is out of range
-bge t1, t2, end_game ; y coordinate is out of range
-blt t1, zero, end_game ; y coordinate is out of range
-bne t3, zero, end_game ; collide with itself
+        bge t0, t5, end_game ; x coordinate is out of range
+        blt t0, zero, end_game ; x coordinate is out of range
+        bge t1, t2, end_game ; y coordinate is out of range
+        blt t1, zero, end_game ; y coordinate is out of range
+        bne t3, zero, end_game ; collide with itself
 
-addi t2, zero, 5
-beq t3, t2, is_food ; collision with food
+        addi t2, zero, 5
+        beq t3, t2, is_food ; collision with food
 
-ldw t2, 0(v0) ; load in t2 the value of v0
-addi t5, zero, 1 ; store in t5 the value 1
-blt t2, t5, no_collision ; branch to no_collision if v0 is smaller than 1
-addi t5, zero, 3 ; store in t5 the value 3
-bge t2, t5, no_collision ; branch to no_collision if v0 is bigger or equal than 3
+        ldw t2, 0(v0) ; load in t2 the value of v0
+        addi t5, zero, 1 ; store in t5 the value 1
+        blt t2, t5, no_collision ; branch to no_collision if v0 is smaller than 1
+        addi t5, zero, 3 ; store in t5 the value 3
+        bge t2, t5, no_collision ; branch to no_collision if v0 is bigger or equal than 3
 
-ret
-; END: get_right
+        ret
+    ; END: get_right
 
-; BEGIN: get_down
-get_down:
+    ; BEGIN: get_down
+    get_down:
 
-ldw t2, NB_COLS(zero)
-ldw t5, NB_ROWS(zero)
+        ldw t2, NB_COLS(zero)
+        ldw t5, NB_ROWS(zero)
 
-addi t1, t1, 1
-addi t4, t4, 4
-ldw t3, GSA(t4) ; load word at address GSA + t4
+        addi t1, t1, 1
+        addi t4, t4, 4
+        ldw t3, GSA(t4) ; load word at address GSA + t4
 
-bge t0, t5, end_game ; x coordinate is out of range
-blt t0, zero, end_game ; x coordinate is out of range
-bge t1, t2, end_game ; y coordinate is out of range
-blt t1, zero, end_game ; y coordinate is out of range
-bne t3, zero, end_game ; collide with itself
+        bge t0, t5, end_game ; x coordinate is out of range
+        blt t0, zero, end_game ; x coordinate is out of range
+        bge t1, t2, end_game ; y coordinate is out of range
+        blt t1, zero, end_game ; y coordinate is out of range
+        bne t3, zero, end_game ; collide with itself
 
-addi t2, zero, 5
-beq t3, t2, is_food ; collision with food
+        addi t2, zero, 5
+        beq t3, t2, is_food ; collision with food
 
-ldw t2, 0(v0) ; load in t2 the value of v0
-addi t5, zero, 1 ; store in t5 the value 1
-blt t2, t5, no_collision ; branch to no_collision if v0 is smaller than 1
-addi t5, zero, 3 ; store in t5 the value 3
-bge t2, t5, no_collision ; branch to no_collision if v0 is bigger or equal than 3
+        ldw t2, 0(v0) ; load in t2 the value of v0
+        addi t5, zero, 1 ; store in t5 the value 1
+        blt t2, t5, no_collision ; branch to no_collision if v0 is smaller than 1
+        addi t5, zero, 3 ; store in t5 the value 3
+        bge t2, t5, no_collision ; branch to no_collision if v0 is bigger or equal than 3
 
-ret
-; END: get_down
+        ret
+    ; END: get_down
 
-; BEGIN: is_food
-is_food:
+    ; BEGIN: is_food
+    is_food:
 
-addi v0, zero, 1
+        addi v0, zero, 1
+        ret
+    ; END: is_food
 
+    ; BEGIN: end_game
+    end_game:
 
-ret
-; END: is_food
+        addi v0, zero, 2
+        ret
+    ; END: end_game
 
-; BEGIN: end_game
-end_game:
+    ; BEGIN: no_collision
+    no_collision:
 
-addi v0, zero, 2
+        addi v0, zero, 0
+        ret
+    ; END: no_collision
 
-
-ret
-; END: end_game
-
-; BEGIN: no_collision
-no_collision:
-
-addi v0, zero, 0
-
-
-ret
-; END: no_collision
-
-; END: hit_test
+    ; END: hit_test
 
 
 
