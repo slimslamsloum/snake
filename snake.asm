@@ -223,8 +223,8 @@ set_pixel:
 display_score:
     ldw t0, SCORE(zero) ;load the score 
 
-    addi t1, zero, zero
-    addi t2, zero, zero
+    add t1, zero, zero
+    add t2, zero, zero
 
     ;BEGIN: unit_loop
     unit_loop:
@@ -262,7 +262,7 @@ init_game:
     
     addi t0, zero, DIR_RIGHT       ; init the right direction
     stw t0, GSA(zero)       ; put the right direction 
-    addi a0, zero, zero     ; reset the values that could be important and put some sides effect 
+    add a0, zero, zero     ; reset the values that could be important and put some sides effect 
 
     call create_food        ; create food at random 
     call display_score      ; display the initial score 
@@ -807,7 +807,7 @@ move_snake:
 
 ; BEGIN: save_checkpoint
 save_checkpoint:
-    addi v0, zero, zero     ; init to zero the return value
+    add v0, zero, zero     ; init to zero the return value
     addi t0, zero, 10       ; init the 10 immediate
     ldw t1, SCORE(zero)     ; load the current score 
 
@@ -832,8 +832,8 @@ save_checkpoint:
 
         ; BEGIN: loop_word
         loop_word:
-            addi a0, zero, s0               ; init arg 1
-            addi a1, zero, s1               ; init arg 2
+            add a0, zero, s0               ; init arg 1
+            add a1, zero, s1               ; init arg 2
             call copy_memory                ; call the copy memory process
             beq s0, s2, return_process      ; testing if reached the end of the GSA
             addi s0, s0, 4                  ; if not then counter +4
@@ -874,8 +874,8 @@ restore_checkpoint:
 
         ; BEGIN: loop_word_res
         loop_word_res:
-            addi a0, zero, s0               ; init arg 1
-            addi a1, zero, s1               ; init arg 2
+            add a0, zero, s0               ; init arg 1
+            add a1, zero, s1               ; init arg 2
             call copy_memory                ; call the copy memory process
             beq s1, s2, ret_process      ; testing if reached the end of the GSA
             addi s0, s0, 4                  ; if not then counter +4
@@ -904,8 +904,8 @@ restore_checkpoint:
 copy_memory:
     ; a0 is the start memory address 
     ; a1 is the destination memory address 
-    ldw t0, a0(zero)    ; load the memory region
-    stw t0, a1(zero)    ; and copy the good memory region in the destination
+    ldw t0, 0(a0)    ; load the memory region
+    stw t0, 0(a1)    ; and copy the good memory region in the destination
 
     ret
 ; END: copy_memory
