@@ -64,6 +64,7 @@ main:
 
         ; BEGIN: loop_get_input
         loop_get_input:
+            call wait_procedure
             call get_input
             add t0, zero, v0 ; load which button pressed
             addi t1, zero, 5
