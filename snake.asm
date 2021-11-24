@@ -54,60 +54,113 @@ addi    sp, zero, LEDS
 ; return values
 ;     This procedure should never return.
 main:
-    ; TODO: Finish this procedure.
-; TODO: Finish this procedure.
- call clear_leds
-    addi a0, zero, 0
-    addi t0, zero, 4
-    stw t0, GSA(zero)
-    ; CSTE
-    call create_food
 
-    ;BEGIN: loop 
-    loop:
-		
-        call clear_leds
-        call get_input
-        call hit_test
+    stw, zero, zero(CP_VALID) ; cp_valid starts at 0
 
-        add a0, zero, v0
+    loop_init_game:
 
-        beq a0, zero, continue
+        call init_game
 
-        addi t1, zero, 2
-        beq a0, t1, end 
+        loop_get_input:
+            call get_input
+            add t0, zero, v0 ; load which button pressed
+            beq, t0, 5, checkpoint
+            bne, t0, 5, not_checkpoint
 
-		addi t0, zero, 1
-        beq a0, t0, eat
-       
-        beq zero, zero, loop
+            checkpoint:
 
+                call restore_checkpoint
+                ldw t0, zero(CP_VALID)
+                beq t0, 1, cp_valid
+                beq t0, 0, cp_not_valid
+
+                cp_valid:
+
+                    call blink_score
+                    call clear_leds
+                    call draw_array
+                    call loop_get_input
+
+                    ret
+
+                cp_not_valid:
+
+                    call loop_get_input
+
+                    ret
+            ret
+
+            not_checkpoint:
+
+                call hit_test
+                add t0, zero, v0
+                beq t0, 1, eat_food
+                bne t0, 1, no_eat_food
+
+                eat_food:
+
+                    ldw t0, SCORE(0)
+                    addi t0, t0, 1
+                    stw t0, SCORE(0)
+
+                    call display_score
+                    call move_snake
+                    call create_food
+                    call save_checkpoint
+
+                    add t0, zero, v0
+
+                    beq t0, 1, save_cp
+                    beq t0, 0, dont_save_cp
+
+                    save_cp:
+
+                        call blink_score
+                        call clear_leds
+                        call draw_array
+                        call loop_get_input
+
+                        ret
+
+                    dont_save_cp:
+
+                        call clear_leds
+                        call draw_array
+                        call loop_get_input
+
+                        ret
+
+                ret
+                
+                no_eat_food:
+
+                    beq t0, 2, collide
+                    beq t0, 0, dont_collide
+
+                    collide:
+
+                        call loop_init_game
+
+                        ret
+
+                    dont_collide:
+                        call move_snake
+                        call clear_leds
+                        call draw_array
+                        call loop_get_input
+
+                        ret
+                ret
+            ret
         ret
-    ;END: loop
-
-    ;BEGIN: continue
-    continue:
-    call move_snake 
-    call draw_array
-    br loop
-    ;END: continue 
-
-    ;BEGIN: eat    
-    eat: 
-	
-    call move_snake 
-    call draw_array
-    br loop
-    ;END: eat 
-
-	; BEGIN: end 	
-	end: 
-	call clear_leds
-	ret
-	; END: end 
-    
-
     ret
+
+
+ 
+
+
+
+
 ; BEGIN: clear_leds
 clear_leds:
 
