@@ -275,6 +275,7 @@ init_game:
     stw zero, 0(s0)
     beq s0, s1, end_init 
     addi s0, s0, 4
+    br reset_GSA
     ; END: reset_GSA
 
     ; BEGIN: end_init
@@ -998,6 +999,7 @@ wait_procedure:
     loop_time:
         beq s0, zero, return_procedure
         addi s0, t0, -1
+        br loop_time
     ; END
 
     ; BEGIN
