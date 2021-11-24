@@ -855,10 +855,10 @@ save_checkpoint:
 
 ; BEGIN: restore_checkpoint
 restore_checkpoint:
-
+    addi t2, zero, 1
     ldw t0, CP_VALID(zero) ; load word at address CP_VALID
-    beq t0, 1, valid ; branch if is valid
-    bne t0, 0, not_valid ; branch if isn't valid
+    beq t0, t2, valid ; branch if is valid
+    bne t0, zero, not_valid ; branch if isn't valid
 
     ; BEGIN: valid
     valid: 
@@ -867,23 +867,23 @@ restore_checkpoint:
         addi s1, zero, 0x1000     ; init start
         addi s2, zero, 0x1194     ; end 
 
-        ; BEGIN: loop_word
-        loop_word:
+        ; BEGIN: loop_word_res
+        loop_word_res:
             addi a0, zero, s0               ; init arg 1
             addi a1, zero, s1               ; init arg 2
             call copy_memory                ; call the copy memory process
-            beq s1, s2, return_process      ; testing if reached the end of the GSA
+            beq s1, s2, ret_process      ; testing if reached the end of the GSA
             addi s0, s0, 4                  ; if not then counter +4
             addi s1, s1, 4                  ; if not then counter +4
-            br loop_word                    ; branch to the loop again 
+            br loop_word_res                    ; branch to the loop again 
 
-        ; END: loop_word 
+        ; END: loop_word_res 
 
-        ; BEGIN: return_process
-        return_process:
+        ; BEGIN: ret_process
+        ret_process:
             addi v0, zero, 1
             ret
-        ; END: return_process
+        ; END: ret_process
         ret
     ; END: valid
 
