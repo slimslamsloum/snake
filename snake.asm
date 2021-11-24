@@ -57,16 +57,19 @@ main:
 
     stw, zero, zero(CP_VALID) ; cp_valid starts at 0
 
+    ; BEGIN: loop_init_game
     loop_init_game:
 
         call init_game
 
+        ; BEGIN: loop_get_input
         loop_get_input:
             call get_input
             add t0, zero, v0 ; load which button pressed
             beq, t0, 5, checkpoint
             bne, t0, 5, not_checkpoint
 
+            ; BEGIN: checkpoint
             checkpoint:
 
                 call restore_checkpoint
@@ -74,6 +77,7 @@ main:
                 beq t0, 1, cp_valid
                 beq t0, 0, cp_not_valid
 
+                ; BEGIN: cp_valid
                 cp_valid:
 
                     call blink_score
@@ -81,15 +85,20 @@ main:
                     call draw_array
                     call loop_get_input
 
-                    ret
+                ret
+                ; END: cp_valid
 
+                ; BEGIN: cp_not_valid
                 cp_not_valid:
 
                     call loop_get_input
 
-                    ret
+                ret
+                ; END: cp_not_valid
             ret
+            ; END: checkpoint
 
+            ; BEGIN: not_checkpoint
             not_checkpoint:
 
                 call hit_test
@@ -97,6 +106,7 @@ main:
                 beq t0, 1, eat_food
                 bne t0, 1, no_eat_food
 
+                ; BEGIN: eat_food
                 eat_food:
 
                     ldw t0, SCORE(0)
@@ -113,6 +123,7 @@ main:
                     beq t0, 1, save_cp
                     beq t0, 0, dont_save_cp
 
+                    ; BEGIN: save_cp
                     save_cp:
 
                         call blink_score
@@ -120,46 +131,53 @@ main:
                         call draw_array
                         call loop_get_input
 
-                        ret
-
+                    ret
+                    ; END: save_cp
+                        
+                    ; BEGIN: dont_save_cp
                     dont_save_cp:
 
                         call clear_leds
                         call draw_array
                         call loop_get_input
 
-                        ret
+                    ret
+                    ; END: dont_save_cp
 
                 ret
+                ; END: eat_food
                 
+                ; BEGIN: no_eat_food
                 no_eat_food:
 
                     beq t0, 2, collide
                     beq t0, 0, dont_collide
 
+                    ; BEGIN: collide
                     collide:
 
                         call loop_init_game
 
-                        ret
+                    ret
+                    ; END: collide
 
+                    ; BEGIN: dont_collide
                     dont_collide:
                         call move_snake
                         call clear_leds
                         call draw_array
                         call loop_get_input
 
-                        ret
+                    ret
+                    ; END: dont_collide
                 ret
+                ; END: no_eat_food
             ret
+            ; END: not_checkpoint
         ret
+        ; END: loop_get_input
     ret
-
-
- 
-
-
-
+    ; END: loop_init_game
 
 ; BEGIN: clear_leds
 clear_leds:
