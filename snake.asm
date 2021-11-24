@@ -58,7 +58,7 @@ addi    sp, zero, LEDS
 ;     This procedure should never return.
 main:
 
-    stw, zero, zero(CP_VALID) ; cp_valid starts at 0
+    stw zero, CP_VALID(zero) ; cp_valid starts at 0
 
     ; BEGIN: loop_init_game
     loop_init_game:
@@ -69,16 +69,18 @@ main:
         loop_get_input:
             call get_input
             add t0, zero, v0 ; load which button pressed
-            beq, t0, 5, checkpoint
-            bne, t0, 5, not_checkpoint
+            addi t1, zero, 5
+            beq t0, t1, checkpoint
+            bne t0, t1, not_checkpoint
 
             ; BEGIN: checkpoint
             checkpoint:
 
                 call restore_checkpoint
-                ldw t0, zero(CP_VALID)
-                beq t0, 1, cp_valid
-                beq t0, 0, cp_not_valid
+                ldw t0, CP_VALID(zero)
+                addi t1, zero, 1
+                beq t0, t1, cp_valid
+                beq t0, zero, cp_not_valid
 
                 ; BEGIN: cp_valid
                 cp_valid:
@@ -106,15 +108,16 @@ main:
 
                 call hit_test
                 add t0, zero, v0
-                beq t0, 1, eat_food
-                bne t0, 1, no_eat_food
+                addi t1, zero, 1
+                beq t0, t1, eat_food
+                bne t0, t1, no_eat_food
 
                 ; BEGIN: eat_food
                 eat_food:
 
-                    ldw t0, SCORE(0)
+                    ldw t0, SCORE(zero)
                     addi t0, t0, 1
-                    stw t0, SCORE(0)
+                    stw t0, SCORE(zero)
 
                     call display_score
                     call move_snake
@@ -123,8 +126,9 @@ main:
 
                     add t0, zero, v0
 
-                    beq t0, 1, save_cp
-                    beq t0, 0, dont_save_cp
+                    addi t1, zero, 1
+                    beq t0, t1, save_cp
+                    beq t0, zero, dont_save_cp
 
                     ; BEGIN: save_cp
                     save_cp:
@@ -153,8 +157,9 @@ main:
                 ; BEGIN: no_eat_food
                 no_eat_food:
 
-                    beq t0, 2, collide
-                    beq t0, 0, dont_collide
+                    addi t1, zero, 2
+                    beq t0, t1, collide
+                    beq t0, zero, dont_collide
 
                     ; BEGIN: collide
                     collide:
