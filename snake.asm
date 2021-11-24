@@ -256,6 +256,9 @@ display_score:
 
 ; BEGIN: init_game
 init_game:
+    addi sp, sp, -4 
+    stw ra, 0(sp)
+
     call clear_leds         ; clear the leds
 
     stw  zero, HEAD_X(zero) ; init the head x
@@ -272,6 +275,9 @@ init_game:
     call display_score      ; display the initial score 
     call draw_array         ; switch on and init the goods leds 
 
+    ;handle the sp
+	ldw ra, 0(sp)
+	addi sp, sp, 4
     ret 
 
 ; END: init_game
@@ -840,7 +846,17 @@ save_checkpoint:
         loop_word:
             add a0, zero, s0               ; init arg 1
             add a1, zero, s1               ; init arg 2
+            
+            ; handle the stack pointer 
+            addi sp, sp, -4 
+            stw ra, 0(sp)
+    
             call copy_memory                ; call the copy memory process
+
+            ;handle the sp
+		    ldw ra, 0(sp)
+		    addi sp, sp, 4
+
             beq s0, s2, return_process      ; testing if reached the end of the GSA
             addi s0, s0, 4                  ; if not then counter +4
             addi s1, s1, 4                  ; if not then counter +4
@@ -882,7 +898,16 @@ restore_checkpoint:
         loop_word_res:
             add a0, zero, s0               ; init arg 1
             add a1, zero, s1               ; init arg 2
+            ; handle the stack pointer 
+            addi sp, sp, -4 
+            stw ra, 0(sp)
+    
             call copy_memory                ; call the copy memory process
+
+            ;handle the sp
+		    ldw ra, 0(sp)
+		    addi sp, sp, 4
+            
             beq s1, s2, ret_process      ; testing if reached the end of the GSA
             addi s0, s0, 4                  ; if not then counter +4
             addi s1, s1, 4                  ; if not then counter +4
@@ -926,7 +951,16 @@ blink_score:
         slli t0, s1, 1              ; modulo 2 
         beq t0, zero, display_score ; if the counter modulo 2 then switch on the light
         bne t0, zero, switch_off    ; if the counter is not modulo 2 then switch off 
+        ; handle the stack pointer 
+        addi sp, sp, -4 
+        stw ra, 0(sp)
+        
         call wait_procedure         ; call the waiting procedure 
+
+        ;handle the sp
+		ldw ra, 0(sp)
+		addi sp, sp, 4
+        
         addi s1, s1, -1
         jmpi blink_procedure
     ; END: blink_procedure
