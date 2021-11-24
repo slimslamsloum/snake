@@ -106,6 +106,7 @@ main:
 
                 call hit_test
                 add t0, zero, v0
+                add a0, zero, t0
                 addi t1, zero, 1
                 beq t0, t1, eat_food
                 bne t0, t1, no_eat_food
