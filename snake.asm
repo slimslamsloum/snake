@@ -774,6 +774,53 @@ move_snake:
 
 ; BEGIN: save_checkpoint
 save_checkpoint:
+    addi v0, zero, zero     ; init to zero the return value
+    addi t0, zero, 10       ; init the 10 immediate
+    ldw t1, SCORE(zero)     ; load the current score 
+
+    ; BEGIN: ten_loop
+    ten_loop:
+    addi t1, t1, -10                ; sub ten to the score
+    beq t1, zero, saving_procedure  ; check if i am a multiple of 10 
+    blt t1, zero, no_checkpoint     ; no checkpoint procedure
+    br ten_loop                     ; if no test is fullfield the loop
+    ; END; ten_loop
+
+    ; BEGIN: saving_procedure 
+    saving_procedure:
+    
+        addi t0, zero, 1        ; init a bit  
+        addi v0, zero, 1        ; init v0 to 1
+        stw t0, CP_VALID(zero)  ; init the checkpoint 
+
+        addi s0, zero, 0x1000     ; init a register to the number of word in the GSA 
+        addi s1, zero, 0x1204     ; init start of checkpoint
+        addi s2, zero, 0x1194     ; end 
+
+        ; BEGIN: loop_word
+        loop_word:
+            addi a0, zero, s0               ; init arg 1
+            addi a1, zero, s1               ; init arg 2
+            call copy_memory                ; call the copy memory process
+            beq s0, s2, return_process      ; testing if reached the end of the GSA
+            addi s0, s0, 4                  ; if not then counter +4
+            addi s1, s1, 4                  ; if not then counter +4
+            br loop_word                    ; branch to the loop again 
+
+        ; END: loop_word 
+
+        ; BEGIN: return_process
+        return_process:
+            ret
+        ; END: return_process
+
+        ret
+    ; END: saving_procedure 
+
+    ; BEGIN: no_checkpoint
+    no_checkpoint:
+        ret
+    ; END: no_checkpoint
 
 ; END: save_checkpoint
 
@@ -781,7 +828,54 @@ save_checkpoint:
 ; BEGIN: restore_checkpoint
 restore_checkpoint:
 
+    ldw t0, CP_VALID(zero) ; load word at address CP_VALID
+    beq t0, 1, valid ; branch if is valid
+    bne t0, 0, not_valid ; branch if isn't valid
+
+    ; BEGIN: valid
+    valid: 
+    
+        addi s0, zero, 0x1204     ; init start checkpoint 
+        addi s1, zero, 0x1000     ; init start
+        addi s2, zero, 0x1194     ; end 
+
+        ; BEGIN: loop_word
+        loop_word:
+            addi a0, zero, s0               ; init arg 1
+            addi a1, zero, s1               ; init arg 2
+            call copy_memory                ; call the copy memory process
+            beq s1, s2, return_process      ; testing if reached the end of the GSA
+            addi s0, s0, 4                  ; if not then counter +4
+            addi s1, s1, 4                  ; if not then counter +4
+            br loop_word                    ; branch to the loop again 
+
+        ; END: loop_word 
+
+        ; BEGIN: return_process
+        return_process:
+            addi v0, zero, 1
+            ret
+        ; END: return_process
+        ret
+    ; END: valid
+
+    ; BEGIN: not_valid
+    not_valid: 
+        addi v0, zero, 0
+        ret
+    ; END: not_valid
+
 ; END: restore_checkpoint
+
+; BEGIN: copy_memory
+copy_memory:
+    ; a0 is the start memory address 
+    ; a1 is the destination memory address 
+    ldw t0, a0(zero)    ; load the memory region
+    stw t0, a1(zero)    ; and copy the good memory region in the destination
+
+    ret
+; END: copy_memory
 
 
 ; BEGIN: blink_score
