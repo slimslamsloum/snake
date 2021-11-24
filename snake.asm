@@ -270,6 +270,8 @@ init_game:
     call display_score      ; display the initial score 
     call draw_array         ; switch on and init the goods leds 
 
+    ret 
+
 ; END: init_game
 
 
