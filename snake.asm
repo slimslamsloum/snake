@@ -133,64 +133,32 @@ save_checkpoint:
         addi v0, zero, 1        ; init v0 to 1
         stw t0, CP_VALID(zero)  ; init the checkpoint 
 
-        ; HEAD_X
-        addi a0, zero, HEAD_X
-        addi a1, zero, CP_HEAD_X
-        call copy_memory
-        
-        ; HEAD_Y
-        addi a0, zero, HEAD_Y           
-        addi a1, zero, CP_HEAD_Y
-        call copy_memory
-        
-        ; TAIL_X 
-        addi a0, zero, TAIL_X
-        addi a1, zero, CP_TAIL_X
-        call copy_memory
-        
-
-        ; TAIL_Y
-        addi a0, zero, TAIL_Y
-        addi a1, zero, CP_TAIL_Y
-        call copy_memory
-        
-
-        ; SCORE
-        addi a0, zero, SCORE
-        addi a1, zero, CP_SCORE
-        call copy_memory
-        
-        ; GSA
-        call saving_GSA 
-
-        ret
-    ; END: saving_procedure 
-
-    ; BEGIN: saving_GSA
-    saving_GSA:
-
-        addi s0, zero, NB_CELLS     ; init a register to the number of word in the GSA 
+        addi s0, zero, 0x1000     ; init a register to the number of word in the GSA 
+        addi s1, zero, 0x1204     ; init start of checkpoint
+        addi s2, zero, 0x1194     ; end 
 
         ; BEGIN: loop_word
         loop_word:
-            slli t0, s0, 2 ; multiply by 4 to get the good word in gsa
-            addi a0, zero, GSA(t0)          ; load the good address GSA
-            addi a1, zero, CP_GSA(t0)       ; load the good address from CP_GSA
+            addi a0, zero, s0               ; init arg 1
+            addi a1, zero, s1               ; init arg 2
             call copy_memory                ; call the copy memory process
-            beq s0, zero, return_process    ; testing if reached the end of the GSA
-            addi s0, s0, -1                 ; if not then counter -1
+            beq s0, s2, return_process      ; testing if reached the end of the GSA
+            addi s0, s0, 4                  ; if not then counter +4
+            addi s1, s1, 4                  ; if not then counter +4
             br loop_word                    ; branch to the loop again 
+
         ; END: loop_word 
 
         ; BEGIN: return_process
         return_process:
             ret
         ; END: return_process
-    ; END: saving_GSA
+
+        ret
+    ; END: saving_procedure 
 
     ; BEGIN: no_checkpoint
     no_checkpoint:
-
         ret
     ; END: no_checkpoint
 
@@ -200,45 +168,41 @@ save_checkpoint:
 ; BEGIN: restore_checkpoint
 restore_checkpoint:
 
-    ldw t0, 0(CP_VALID) ; load word at address CP_VALID
+    ldw t0, CP_VALID(zero) ; load word at address CP_VALID
     beq t0, 1, valid ; branch if is valid
     bne t0, 0, not_valid ; branch if isn't valid
 
     ; BEGIN: valid
     valid: 
         addi s0, zero, NB_CELLS ; init a register to the number of word in the GSA 
-        call loop_gsa ; loop through entire GSA
 
+        addi s0, zero, 0x1000     ; init a register to the number of word in the GSA 
+        addi s1, zero, 0x1204     ; init start of checkpoint
+        addi s2, zero, 0x1194     ; end 
 
-        ; BEGIN: loop_gsa
-        loop_gsa:
-            slli t0, s0, 2 ; multiply by 4 to get the good word in gsa
-            addi a0, zero, CP_GSA(t0) ; load the good address CP_GSA
-            addi a1, zero, GSA(t0) ; load the good address from GSA
-            call copy_memory ; call the copy memory process
-            beq s0, zero, break ; testing if reached the end of the GSA
-            addi s0, s0, -1 ; if not then counter -1
-            br loop_gsa ; branch to the loop again 
-        ; END: loop_gsa
+        ; BEGIN: loop_word
+        loop_word:
+            addi a0, zero, s0               ; init arg 1
+            addi a1, zero, s1               ; init arg 2
+            call copy_memory                ; call the copy memory process
+            beq s0, s2, return_process      ; testing if reached the end of the GSA
+            addi s0, s0, 4                  ; if not then counter +4
+            addi s1, s1, 4                  ; if not then counter +4
+            br loop_word                    ; branch to the loop again 
 
-        ; BEGIN: break
-        break:
+        ; END: loop_word 
+
+        ; BEGIN: return_process
+        return_process:
+            addi v0, zero, 1
             ret
-        ; END: break
-
-
-        addi t0, zero, 1
-        stw t0, 0(v0) ; return in v0 1 if is valid
-
+        ; END: return_process
         ret
     ; END: valid
 
     ; BEGIN: not_valid
     not_valid: 
-
-        addi t0, zero, 1
-        stw t0, 0(v0) ; return in v0 0 if isn't valid
-
+        addi v0, zero, 0
         ret
     ; END: not_valid
 
