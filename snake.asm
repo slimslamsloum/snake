@@ -129,6 +129,7 @@ save_checkpoint:
 
     ; BEGIN: saving_procedure 
     saving_procedure:
+    
         addi t0, zero, 1        ; init a bit  
         addi v0, zero, 1        ; init v0 to 1
         stw t0, CP_VALID(zero)  ; init the checkpoint 
@@ -174,10 +175,9 @@ restore_checkpoint:
 
     ; BEGIN: valid
     valid: 
-        addi s0, zero, NB_CELLS ; init a register to the number of word in the GSA 
-
-        addi s0, zero, 0x1000     ; init a register to the number of word in the GSA 
-        addi s1, zero, 0x1204     ; init start of checkpoint
+    
+        addi s0, zero, 0x1204     ; init start checkpoint 
+        addi s1, zero, 0x1000     ; init start
         addi s2, zero, 0x1194     ; end 
 
         ; BEGIN: loop_word
@@ -185,7 +185,7 @@ restore_checkpoint:
             addi a0, zero, s0               ; init arg 1
             addi a1, zero, s1               ; init arg 2
             call copy_memory                ; call the copy memory process
-            beq s0, s2, return_process      ; testing if reached the end of the GSA
+            beq s1, s2, return_process      ; testing if reached the end of the GSA
             addi s0, s0, 4                  ; if not then counter +4
             addi s1, s1, 4                  ; if not then counter +4
             br loop_word                    ; branch to the loop again 
