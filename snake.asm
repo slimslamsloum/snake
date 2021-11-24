@@ -267,6 +267,18 @@ init_game:
     stw  zero, TAIL_Y(zero) ; init the tail y 
     stw zero, SCORE(zero)   ; init the score to zero
 
+    addi s0, zero, GSA ; init the value 
+    addi s1, zero, 0x1194  
+    
+    ; BEGIN: reset_GSA
+    reset_GSA:
+    stw zero, s0(zero)
+    beq s0, s1, end_init 
+    addi s0, s0, 4
+    ; END: reset_GSA
+
+    ; BEGIN: end_init
+    end_init:
     addi t0, zero, DIR_RIGHT       ; init the right direction
     stw t0, GSA(zero)       ; put the right direction 
     add a0, zero, zero     ; reset the values that could be important and put some sides effect 
@@ -279,7 +291,8 @@ init_game:
 	ldw ra, 0(sp)
 	addi sp, sp, 4
     ret 
-
+    ; END: end_init 
+    
 ; END: init_game
 
 
