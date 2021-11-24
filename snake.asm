@@ -272,7 +272,7 @@ init_game:
     
     ; BEGIN: reset_GSA
     reset_GSA:
-    stw zero, s0(zero)
+    stw zero, 0(s0)
     beq s0, s1, end_init 
     addi s0, s0, 4
     ; END: reset_GSA
