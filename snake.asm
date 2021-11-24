@@ -43,9 +43,6 @@
 .equ    ARG_HUNGRY,     0       ; a0 argument for move_snake when food wasn't eaten
 .equ    ARG_FED,        1       ; a0 argument for move_snake when food was eaten
 
-;Param
-.equ    TIMER,          5000   ; latence 
-
 
 ; initialize stack pointer
 addi    sp, zero, LEDS
@@ -237,17 +234,22 @@ display_score:
 
     ; BEGIN: set_process
     set_process:
-        addi t1, t1, 10
+        addi t1, t0, 10
         addi t2, t2, -1
+        slli t2, t2, 2
+        slli t1, t1, 2
 
+        ldw t1, digit_map(t1) ; load
+        ldw t2, digit_map(t2) ; load
+        ldw t3, digit_map(zero)
+        stw t3, SEVEN_SEGS(zero)
+        stw t3,SEVEN_SEGS+4(zero)
+        stw t1, SEVEN_SEGS+12(zero) ; change the value 
+        stw t2, SEVEN_SEGS+8(zero) ; change the value 
+    
         ret
     ;END: set_process
 
-    ldw t1, digit_map(t1) ; load
-    ldw t2, digit_map(t2) ; load
-    stw t1, SEVEN_SEGS+12(zero) ; change the value 
-    stw t2, SEVEN_SEGS+8(zero) ; change the value 
-    
 ; END: display_score
 
 
@@ -260,7 +262,7 @@ init_game:
     stw  zero, TAIL_X(zero) ; init the tail x
     stw  zero, TAIL_Y(zero) ; init the tail y 
     stw zero, SCORE(zero)   ; init the score to zero
-    
+
     addi t0, zero, DIR_RIGHT       ; init the right direction
     stw t0, GSA(zero)       ; put the right direction 
     add a0, zero, zero     ; reset the values that could be important and put some sides effect 
@@ -269,7 +271,7 @@ init_game:
     call display_score      ; display the initial score 
     call draw_array         ; switch on and init the goods leds 
 
-    ret
+    ret 
 
 ; END: init_game
 
@@ -941,7 +943,7 @@ blink_score:
 ; BEGIN: wait_procedure
 wait_procedure:
 
-    addi s0, zero, TIMER
+    addi s0, zero, 5000   ; latence 
     slli s0, s0, 10 
 
     ; BEGIN
