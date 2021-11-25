@@ -909,7 +909,7 @@ restore_checkpoint:
     addi t2, zero, 1
     ldw t0, CP_VALID(zero) ; load word at address CP_VALID
     beq t0, t2, valid ; branch if is valid
-    bne t0, zero, not_valid ; branch if isn't valid
+    beq t0, zero, not_valid ; branch if isn't valid
 
     ; BEGIN: valid
     valid: 
