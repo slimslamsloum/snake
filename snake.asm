@@ -998,7 +998,7 @@ wait_procedure:
     ; BEGIN
     loop_time:
         beq s0, zero, return_procedure
-        addi s0, t0, -1
+        addi s0, s0, -1
         br loop_time
     ; END
 
