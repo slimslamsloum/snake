@@ -955,39 +955,81 @@ copy_memory:
     ret
 ; END: copy_memory
 
-
 ; BEGIN: blink_score
 blink_score:
-    addi s1, zero, 6
 
-    ; BEGIN: blink_procedure
-    blink_procedure:
-        slli t0, s1, 1              ; modulo 2 
-        beq t0, zero, display_score ; if the counter modulo 2 then switch on the light
-        bne t0, zero, switch_off    ; if the counter is not modulo 2 then switch off 
-        ; handle the stack pointer 
+		; handle the stack pointer 
         addi sp, sp, -4 
         stw ra, 0(sp)
+		call switch_off ;
+ 		;handle the sp
+		ldw ra, 0(sp)
+		addi sp, sp, 4
         
-        call wait_procedure         ; call the waiting procedure 
 
+	 	; handle the stack pointer 
+        addi sp, sp, -4 
+        stw ra, 0(sp)
+        call wait_procedure         ; call the waiting procedure 
+        ;handle the sp
+		ldw ra, 0(sp)
+		addi sp, sp, 4
+
+		; handle the stack pointer 
+        addi sp, sp, -4 
+        stw ra, 0(sp)        
+        call display_score ; if the counter modulo 2 then switch on the light
+		 ;handle the sp
+		ldw ra, 0(sp)
+		addi sp, sp, 4
+        
+
+		; handle the stack pointer 
+        addi sp, sp, -4 
+        stw ra, 0(sp)
+        call wait_procedure         ; call the waiting procedure 
+        ;handle the sp
+		ldw ra, 0(sp)
+		addi sp, sp, 4
+
+		; handle the stack pointer 
+        addi sp, sp, -4 
+        stw ra, 0(sp)        
+		call switch_off	;
+		 ;handle the sp
+		ldw ra, 0(sp)
+		addi sp, sp, 4
+        
+	 	
+		; handle the stack pointer 
+        addi sp, sp, -4 
+        stw ra, 0(sp)
+        call wait_procedure         ; call the waiting procedure 
         ;handle the sp
 		ldw ra, 0(sp)
 		addi sp, sp, 4
         
-        addi s1, s1, -1
-        jmpi blink_procedure
-    ; END: blink_procedure
+		; handle the stack pointer 
+        addi sp, sp, -4 
+        stw ra, 0(sp)
+		call display_score ; 
+		;handle the sp
+		ldw ra, 0(sp)
+		addi sp, sp, 4
 
-    ; BEGIN: switch_off
+  ret
+; END: blink_score
+
+; BEGIN: switch_off
     switch_off:
         stw zero, SEVEN_SEGS(zero)   ; switch off the light
         stw zero, SEVEN_SEGS+4(zero) ; switch off the light
         stw zero, SEVEN_SEGS+8(zero) ; switch off the light 
         stw zero, SEVEN_SEGS+12(zero); switch off the light 
-    ; END: switch_off 
 
-; END: blink_score
+		ret
+; END: switch_off 
+
 
 ; BEGIN: wait_procedure
 wait_procedure:
