@@ -890,6 +890,16 @@ save_checkpoint:
     no_checkpoint:
         ret
     ; END: no_checkpoint
+  
+    ; BEGIN: copy_memory
+    copy_memory:
+    ; a0 is the start memory address 
+    ; a1 is the destination memory address 
+    ldw t0, 0(a0)    ; load the memory region
+    stw t0, 0(a1)    ; and copy the good memory region in the destination
+
+    ret
+    ; END: copy_memory
 
 ; END: save_checkpoint
 
@@ -943,17 +953,17 @@ restore_checkpoint:
         ret
     ; END: not_valid
 
-; END: restore_checkpoint
-
-; BEGIN: copy_memory
-copy_memory:
+    ; BEGIN: copy_memory
+    copy_memory:
     ; a0 is the start memory address 
     ; a1 is the destination memory address 
     ldw t0, 0(a0)    ; load the memory region
     stw t0, 0(a1)    ; and copy the good memory region in the destination
 
     ret
-; END: copy_memory
+    ; END: copy_memory
+
+; END: restore_checkpoint
 
 ; BEGIN: blink_score
 blink_score:
