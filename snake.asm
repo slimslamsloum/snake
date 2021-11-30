@@ -926,7 +926,7 @@ restore_checkpoint:
             addi sp, sp, -4 
             stw ra, 0(sp)
     
-            call copy_memory                ; call the copy memory process
+            call copy_memory_restore                ; call the copy memory process
 
             ;handle the sp
 		    ldw ra, 0(sp)
@@ -953,15 +953,15 @@ restore_checkpoint:
         ret
     ; END: not_valid
 
-    ; BEGIN: copy_memory
-    copy_memory:
+    ; BEGIN: copy_memory_restore
+    copy_memory_restore:
     ; a0 is the start memory address 
     ; a1 is the destination memory address 
     ldw t0, 0(a0)    ; load the memory region
     stw t0, 0(a1)    ; and copy the good memory region in the destination
 
     ret
-    ; END: copy_memory
+    ; END: copy_memory_restore
 
 ; END: restore_checkpoint
 
